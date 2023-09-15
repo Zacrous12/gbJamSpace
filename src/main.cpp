@@ -14,7 +14,6 @@ int main()
 
     const float virtualRatio = (float)screenWidth/(float)virtualScreenWidth;
 
-    //Player player = Player();
 
     InitWindow(screenWidth, screenHeight, "Untitled");
     InitAudioDevice();
@@ -35,17 +34,9 @@ int main()
 
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
-    // Player vars
-    float playerX = 10.0f;
-    float playerY = 140.0f;
-    Rectangle player = { playerX, playerY, 20.0f, 20.0f };
-    float speed = 2.0f;
-    float gravity = 0.5f;
-    float height = 20.0f;
-    int jumpTimer = 0;
-    bool isDucking = false;
-    bool canJump = true;
-    bool isSprinting = false;
+    Player player = Player();
+
+    Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
     Rectangle sourceRec = { 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height };
     Rectangle destRec = { -virtualRatio, -virtualRatio, screenWidth + (virtualRatio*2), screenHeight + (virtualRatio*2) };
@@ -64,7 +55,7 @@ int main()
     {
         float deltaTime = GetFrameTime();
 
-        cameraX = playerX - 70.0f;
+        cameraX = player.playerX - 70.0f;
         cameraY = 32.0f;
 
         // Set the camera's target to the values computed above
@@ -79,60 +70,49 @@ int main()
         screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
         screenSpaceCamera.target.y *= virtualRatio;
 
-        if(IsKeyDown(KEY_D)) playerX += 2.0f;
-        if(IsKeyDown(KEY_A)) playerX -= 2.0f;
-
-        if(IsKeyDown(KEY_S)) isDucking = true, height = 10.0f;
-        else isDucking = false, height = 0.0f;
-
-        if (IsKeyDown(KEY_SPACE) && canJump)
-        {
-            speed -= 0.5f;
-            canJump = false;
-            jumpTimer = 15;
-            gravity = 0.5f;
-        } else if(!canJump && jumpTimer < 2) {
-            playerY += 3.0f * gravity;
-            gravity += 0.1f;
-        }
-
-        if(jumpTimer > 0 && !canJump)
-        {
-            playerY -= 0.5f * jumpTimer;
-            jumpTimer--;
-        }
-
-        if(playerY > 140.0f)
-        {
-            canJump = true;
-            speed = 2.0f;
-            jumpTimer = 0;
-        }
-
-        player = { playerX, playerY + height, 20.0f, 20.0f - height };
+        player.Update();
 
         BeginTextureMode(target);
-            ClearBackground(WHITE);
+            ClearBackground(palette[0]);
 
             BeginMode2D(worldSpaceCamera);
-                DrawCircle(100, 100, 50, GREEN);
-                DrawRectanglePro(player, origin, rotation, RED);
+                for (int i = 50; i > 0; --i)
+                {
+                    int c = i % 4;
+                    DrawCircle(0, 100, i, palette[c]);
+                }
+                for (int i = 50; i > 0; --i)
+                {
+                    int c = (i % 4) + 1;
+                    DrawCircle(100, 100, i, palette[c]);
+                }
+                for (int i = 50; i > 0; --i)
+                {
+                    int c = (i % 4) + 2;
+                    DrawCircle(200, 100, i, palette[c]);
+                }
+                for (int i = 50; i > 0; --i)
+                {
+                    int c = (i % 4) + 3;
+                    DrawCircle(300, 100, i, palette[c]);
+                }
+                
+                DrawRectanglePro(player.position, origin, rotation, palette[1]);
             EndMode2D();
         EndTextureMode();
 
         BeginDrawing();
-            ClearBackground(RED);
+            ClearBackground(palette[0]);
 
             BeginMode2D(screenSpaceCamera);
-                DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+                DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, palette[0]);
             EndMode2D();
 
             DrawFPS(GetScreenWidth() - 95, 10);
-            DrawText(text, 20, 10, 20, BLACK);
-            DrawText(TextFormat("%i", currentHealth), 100, 10, 20, RED);
+            DrawText(text, 20, 10, 20, palette[3]);
+            DrawText(TextFormat("Sprint Left: %i", player.sprintTimerLeft), 100, 10, 20, palette[3]);
+            DrawText(TextFormat("Sprint Rght: %i", player.sprintTimerRight), 100, 30, 20, palette[3]);
         EndDrawing();
-
-
     }
 
     UnloadMusicStream(track);
