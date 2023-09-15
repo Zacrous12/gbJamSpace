@@ -41,8 +41,11 @@ int main()
     Rectangle player = { playerX, playerY, 20.0f, 20.0f };
     float speed = 2.0f;
     float gravity = 0.5f;
+    float height = 20.0f;
     int jumpTimer = 0;
+    bool isDucking = false;
     bool canJump = true;
+    bool isSprinting = false;
 
     Rectangle sourceRec = { 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height };
     Rectangle destRec = { -virtualRatio, -virtualRatio, screenWidth + (virtualRatio*2), screenHeight + (virtualRatio*2) };
@@ -79,6 +82,9 @@ int main()
         if(IsKeyDown(KEY_D)) playerX += 2.0f;
         if(IsKeyDown(KEY_A)) playerX -= 2.0f;
 
+        if(IsKeyDown(KEY_S)) isDucking = true, height = 10.0f;
+        else isDucking = false, height = 0.0f;
+
         if (IsKeyDown(KEY_SPACE) && canJump)
         {
             speed -= 0.5f;
@@ -103,7 +109,7 @@ int main()
             jumpTimer = 0;
         }
 
-        player = { playerX, playerY, 20.0f, 20.0f };
+        player = { playerX, playerY + height, 20.0f, 20.0f - height };
 
         BeginTextureMode(target);
             ClearBackground(WHITE);
