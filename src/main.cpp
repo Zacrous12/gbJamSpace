@@ -1,6 +1,6 @@
 #include <raylib.h>
 #include <math.h>
-#include "ball.h"
+#include "Player.h"
 #include <stdio.h>
 
 int main()
