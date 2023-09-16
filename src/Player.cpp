@@ -1,28 +1,12 @@
 #include "Player.h"
 #include <raylib.h>
-#include <raylib.h>
 
 Player::Player()
 {
-    float playerX = 10.0f;
-    float playerY = 140.0f;
-    Rectangle position = { playerX, playerY, 20.0f, 20.0f };
-    float jumpHeight = 20.0f;
-    float speed = 2.0f;
-    float gravity = 0.5f;
-    int jumpTimer = 0;
-    bool canJump = true;
-    bool isDucking = false;
-    float height = 20.0f;
-    int sprintTimeDefault = 20;
-    int sprintTimerLeft = 0;
-    int sprintTimerRight = 0;
-    bool isSprinting = false;
-    int doubleTapRight = 0;
-    int doubleTapLeft = 0;
+
 }
 
-void Player::Update()
+void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
 {
     if(IsKeyPressed(KEY_D)) {
         if(sprintTimerRight > 0) {
@@ -51,7 +35,19 @@ void Player::Update()
         } else {
             speed = 2.0f;
         }
-        playerX += speed;
+        bool canMoveRight = true;
+        for (int i = 0; i < envItemsLength; i++) {
+        EnvItem *ei = envItems + i;
+        if (ei->blocking &&
+            playerX + speed < ei->rect.x + ei->rect.width &&
+            playerX + 20 + speed > ei->rect.x &&
+            playerY + sprite.height > ei->rect.y &&
+            playerY < ei->rect.y + ei->rect.height) {
+            canMoveRight = false;
+            break; // No need to check further if collision is detected
+            }
+        }
+        if(canMoveRight) playerX += speed;
     } 
     if(IsKeyDown(KEY_A)) {
                 if(isSprinting) {
@@ -59,26 +55,57 @@ void Player::Update()
         } else {
             speed = 2.0f;
         }
-        playerX -= speed;
+        bool canMoveLeft = true;
+        for (int i = 0; i < envItemsLength; i++) {
+            EnvItem *ei = envItems + i;
+            if (ei->blocking &&
+                playerX - speed < ei->rect.x + ei->rect.width &&
+                playerX + 20 - speed > ei->rect.x &&
+                playerY + sprite.height > ei->rect.y &&
+                playerY < ei->rect.y + ei->rect.height) {
+                canMoveLeft = false;
+                break; // No need to check further if collision is detected
+            }
+        }
+        // Update position if no collision
+        if (canMoveLeft) {
+            playerX -= speed;
+        }
     }
 
-    if(IsKeyReleased(KEY_D) || IsKeyReleased(KEY_A)) {
+    if(IsKeyReleased(KEY_D)){
         isSprinting = false;
+        facingRight = true;
+    } 
+    if (IsKeyReleased(KEY_A)) {
+        isSprinting = false;
+        facingRight = false;
     }
 
     if(IsKeyDown(KEY_S)) isDucking = true, height = 10.0f;
     else isDucking = false, height = 0.0f;
 
-    if (IsKeyDown(KEY_SPACE) && canJump)
+    if (canJump && IsKeyPressed(KEY_SPACE))
     {
         speed -= 0.5f;
         canJump = false;
         jumpTimer = 15;
         gravity = 0.5f;
-    } else if(!canJump && jumpTimer < 2) {
+    } else if(!canJump && jumpTimer < 2 && playerY < 140.0f) {
         playerY += 3.0f * gravity;
         gravity += 0.1f;
     }
+
+    if (IsKeyPressed(KEY_SPACE) && !canJump && playerY < 95.0f){
+        jumpTimer = 0;
+        gravity = 5.5f;
+        groundPound = true;
+    }
+
+    if ((groundPound && IsKeyReleased(KEY_SPACE)) || playerY > 138.0f){
+        playerY = 140.0f;
+        groundPound = false;
+    } 
 
     if(jumpTimer > 0 && !canJump)
     {
@@ -86,14 +113,22 @@ void Player::Update()
         jumpTimer--;
     }
 
-    if(playerY > 140.0f)
+    if (playerY < 140.0f) // Player is in the air
     {
-        canJump = true;
-        speed = 2.0f;
-        jumpTimer = 0;
+        canJump = false; // Player can't jump while in the air
+        playerY += gravity; // Apply gravity to player's position
+        if (playerY >= 140.0f) // If player hits the ground...
+        {
+            playerY = 140.0f; // Snap player to ground
+            gravity = 0.0f; // Reset gravity
+            canJump = true; // Allow jumping
+        }
     }
 
-    position = { playerX, playerY + height, 20.0f, 20.0f - height };
+    if(playerY >= 140.0f) canJump = true;
+
+    sprite = { playerX, playerY + height, 20.0f, 20.0f - height };
+    position = { playerX, playerY + height };
 }
 
 void Player::Draw()
