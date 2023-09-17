@@ -2,6 +2,7 @@
 #include <math.h>
 #include "raymath.h"
 #include "Player.h"
+#include "enemy.h"
 #include <stdio.h>
 
 int main()
@@ -31,10 +32,10 @@ int main()
     // TODO: MAKE BLOCKS COLLIDE WITH PLAYER
     EnvItem envItems[] = {
         {{ 0, 0, 10, 4 }, 0, GRAY },
-        {{ 0, 120, 10, 20 }, 1, GRAY },
-        {{ 300, 120, 40, 10 }, 1, GRAY },
-        {{ 250, 130, 10, 10 }, 1, GRAY },
-        {{ 650, 130, 10, 10 }, 1, GRAY }
+        {{ 0, 0, 10, 200 }, 1, GRAY },
+        {{ 30, 130, 40, 10 }, 1, GRAY },
+        {{ 50, 130, 10, 10 }, 1, GRAY },
+        {{ 60, 130, 10, 10 }, 1, GRAY }
     };
 
     int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
@@ -57,7 +58,6 @@ int main()
     Vector2 origin = { 0.0f, 0.0f };
 
     float rotation = 0.0f;
-
     float cameraX = 0.0f;
     float cameraY = 0.0f;
 
@@ -66,28 +66,6 @@ int main()
         float deltaTime = GetFrameTime();
 
         player.Update(deltaTime, envItems, envItemsLength);
-
-        int hitObstacle = 0;
-        for (int i = 0; i < envItemsLength; i++)
-        {
-            EnvItem *ei = envItems + i;
-            if (ei->blocking &&
-                player.playerX < ei->rect.x + ei->rect.width &&
-                player.playerX + 20 > ei->rect.x &&
-                player.playerY + player.sprite.height > ei->rect.y &&
-                player.playerY < ei->rect.y + ei->rect.height) {
-                hitObstacle = 1;
-                player.speed = 0.0f;
-                player.playerY = ei->rect.y - player.sprite.height;
-            }
-        }
-
-        if (!hitObstacle)
-        {
-            player.playerY += player.speed*deltaTime;
-            player.speed += player.gravity*deltaTime;
-        }
-        else player.canJump = true;
 
         cameraX = player.playerX - 70.0f;
         cameraY = 32.0f;

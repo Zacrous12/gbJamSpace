@@ -22,6 +22,7 @@ public:
     float playerY = 140.0f;
     Rectangle sprite = { playerX, playerY, 20.0f, 20.0f };
     bool facingRight = true;
+    bool hitObstacle = false;
     Vector2 position = { playerX, playerY };
 
     // MOVEMENT
@@ -32,7 +33,9 @@ public:
     bool groundPound = false;
     bool canJump = true;
     bool isDucking = false;
-    bool canMoveRight, canMoveLeft;
+    bool canMoveRight = true;
+    bool canMoveLeft = true;
+    bool wallJump = false;
     float height = 20.0f;
     int sprintTimeDefault = 20;
     int sprintTimerLeft = 0;
