@@ -26,18 +26,21 @@ int main()
 
     SetTargetFPS(60);
 
+    Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
+
     // HOW TO ADD SPRITES:
     // Texture2D mySprite = LoadTexture("C:/Users/zrouh/OneDrive/Pictures/Untitled.png");
     // THEN CALL DrawTexture(mySprite, 0(posX), 0(posY), WHITE(tint));
 
     // TODO: MAKE BLOCKS COLLIDE WITH PLAYER
     EnvItem envItems[] = {
-        {{ 0, 0, 10, 4 }, 0, GRAY },
-        {{ 0, 0, 10, 200 }, 1, GRAY },
-        {{ 30, 130, 40, 10 }, 1, GRAY },
-        {{ 50, 130, 10, 10 }, 1, GRAY },
-        {{ 60, 130, 10, 10 }, 1, GRAY }
-    };
+        {{ 0, 0, 10, 4 }, 0, palette[3] },
+        {{ 0, 0, 10, 200 }, 1, palette[3] },
+        {{ 30, 130, 40, 10 }, 1, palette[3] },
+        {{ 50, 130, 10, 10 }, 1, palette[3] },
+        {{ 60, 130, 10, 10 }, 1, palette[3] },
+        {{ 100, 100, 100, 10}, 1, palette[3]}
+    }; 
 
     int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
 
@@ -52,8 +55,6 @@ int main()
     Player player = Player();
     Sniper sniper = Sniper({60,115},25,100);
     Crusty crusty = Crusty ({100,140});
-
-    Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
     Rectangle sourceRec = { 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height };
     Rectangle destRec = { -virtualRatio, -virtualRatio, screenWidth + (virtualRatio*2), screenHeight + (virtualRatio*2) };

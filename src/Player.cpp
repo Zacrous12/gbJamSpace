@@ -1,5 +1,9 @@
 #include "Player.h"
 #include <raylib.h>
+#include <stdio.h>
+
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 Player::Player()
 {
@@ -113,29 +117,33 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         gravity += 0.1f;
     }
 
-    if(IsKeyDown(KEY_SPACE) && wallJump){
-        jumpTimer = 3;
+    if(IsKeyPressed(KEY_SPACE) && wallJump){
+        jumpTimer = 8;
         playerY -= 4.0f * gravity;
         gravity += 0.1f;
-        if(facingRight) playerX += 2.0f * gravity;
+        wallJump = false;
+        if(IsKeyDown(KEY_A)) playerX += 2.0f * gravity;
         else playerX -= 2.0f * gravity;
     } 
 
-    if (IsKeyPressed(KEY_SPACE) && !canJump && playerY < 100.0f && !wallJump){
-        jumpTimer = 0;
-        gravity = 5.5f;
+    //GROUND POUND IS BROKEN
+    if (IsKeyPressed(KEY_SPACE) && jumpTimer < 10 && jumpTimer > 0 && canMoveLeft && canMoveRight){
+        jumpTimer = 20;
         groundPound = true;
+        printf("Ground Pound\n");
     }
 
-    if ((groundPound && IsKeyReleased(KEY_SPACE)) || playerY > 138.0f){
-        playerY = 140.0f;
-        groundPound = false;
-    } 
+    if (playerY > 141.0f) playerY = 140.0f;
 
-    if(jumpTimer > 0 && !canJump)
+    if(jumpTimer > 0)
     {
-        playerY -= 0.5f * jumpTimer;
+        if(groundPound == true){
+            playerY += 0.5f * jumpTimer;
+        }else {
+            playerY -= 0.5f * jumpTimer;
+        }
         jumpTimer--;
+        if(jumpTimer == 0) groundPound = false;
     }
 
     if (playerY < 140.0f) // Player is in the air
