@@ -49,6 +49,7 @@ int main()
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
     Player player = Player();
+    Sniper sniper = Sniper({60,115},15,25,100);
 
     Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
@@ -88,6 +89,7 @@ int main()
             BeginMode2D(worldSpaceCamera);
                 for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, palette[3]);
 
+                sniper.DrawSniper(palette[2],player);
                 DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
             EndMode2D();
         EndTextureMode();
