@@ -6,14 +6,14 @@
 
 
 
-Sniper::Sniper(Vector2 pos,float width,float blindR,float sightR){
+Sniper::Sniper(Vector2 pos,float blindR,float sightR){
     dmg=1;
     shootSpeed=1;
     health=1;
     position=pos;
     bulletSpeed=70;
     shouldFire = false;
-    spriteWidth=width;
+    spriteWidth=15;
     sniperRec.height=spriteWidth;
     sniperRec.width=spriteWidth;
     sniperRec.x=position.x;

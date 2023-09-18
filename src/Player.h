@@ -20,7 +20,8 @@ public:
     // POSITION
     float playerX = 10.0f;
     float playerY = 140.0f;
-    Rectangle sprite = { playerX, playerY, 20.0f, 20.0f };
+    float spriteWidth = 20.0f;
+    Rectangle sprite = { playerX, playerY, spriteWidth,spriteWidth};
     bool facingRight = true;
     bool hitObstacle = false;
     Vector2 position = { playerX, playerY };

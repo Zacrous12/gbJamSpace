@@ -3,7 +3,7 @@
 
 Player::Player()
 {
-
+    groundPound=false;
 }
 
 void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)

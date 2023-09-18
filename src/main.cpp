@@ -2,7 +2,8 @@
 #include <math.h>
 #include "raymath.h"
 #include "Player.h"
-#include "enemy.h"
+#include "Sniper.h"
+#include "Crusty.h"
 #include <stdio.h>
 
 int main()
@@ -49,7 +50,8 @@ int main()
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
     Player player = Player();
-    Sniper sniper = Sniper({60,115},15,25,100);
+    Sniper sniper = Sniper({60,115},25,100);
+    Crusty crusty = Crusty ({100,140});
 
     Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
@@ -89,7 +91,11 @@ int main()
             BeginMode2D(worldSpaceCamera);
                 for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, palette[3]);
 
+                
                 sniper.DrawSniper(palette[2],player);
+                crusty.Draw(palette[2],player);
+            
+                
                 DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
             EndMode2D();
         EndTextureMode();
@@ -100,12 +106,13 @@ int main()
             BeginMode2D(screenSpaceCamera);
                 DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, palette[0]);
             EndMode2D();
-
+            
             // UI
             DrawFPS(GetScreenWidth() - 95, 10);
             DrawText(TextFormat("%i", player.currentHealth), 10, 10, 20, palette[3]);
             DrawText(TextFormat("%i", player.currentSpecial), 10, 30, 20, palette[3]);
             DrawText(TextFormat("%f", player.playerX), 100, 30, 20, palette[3]);
+            //Debug: DrawText(TextFormat("%f",debug ), 100, 50, 20, palette[3]);
             DrawRectangle(50, 14, player.currentHealth/player.maxHealth * 100, 10, palette[2]);
             DrawRectangle(45, 34, player.currentSpecial/player.maxSpecial * 100, 10, palette[3]);
             

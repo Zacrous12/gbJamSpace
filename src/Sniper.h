@@ -24,13 +24,12 @@ class Sniper{
     float sightRadius;
     float shootTimer;
     float shootDelay;
-    Player player;
     Vector2 bulletPos;
     Vector2 trig;
     Vector2 position;
     Vector2 targetPos;
     Rectangle sniperRec;
-    Sniper(Vector2 pos,float width,float blindR,float sightR);
+    Sniper(Vector2 pos,float blindR,float sightR);
     void CalcShoot(Player player);
     void UpdateSniper(Player player);
     void DrawSniper(Color c,Player player);
