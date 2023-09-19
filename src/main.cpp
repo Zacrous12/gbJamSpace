@@ -17,7 +17,6 @@ int main()
 
     const float virtualRatio = (float)screenWidth/(float)virtualScreenWidth;
 
-
     InitWindow(screenWidth, screenHeight, "Untitled");
     InitAudioDevice();
     Music track = LoadMusicStream("C:/Users/zrouh/Music/Projects/roshe.mp3");
@@ -32,7 +31,6 @@ int main()
     // Texture2D mySprite = LoadTexture("C:/Users/zrouh/OneDrive/Pictures/Untitled.png");
     // THEN CALL DrawTexture(mySprite, 0(posX), 0(posY), WHITE(tint));
 
-    // TODO: MAKE BLOCKS COLLIDE WITH PLAYER
     EnvItem envItems[] = {
         {{ 0, 0, 10, 4 }, 0, palette[3], false },
         {{ 0, 0, 10, 200 }, 1, palette[3], true },
@@ -92,11 +90,9 @@ int main()
             BeginMode2D(worldSpaceCamera);
                 for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, palette[3]);
 
-                
                 sniper.DrawSniper(palette[2],player);
                 crusty.Draw(palette[2],player);
                 player.Draw();
-            
                 
                 DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
             EndMode2D();

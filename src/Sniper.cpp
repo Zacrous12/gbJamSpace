@@ -2,6 +2,7 @@
 #include "Sniper.h"
 #include "Player.h"
 #include "math.h"
+#include <stdio.h>
 
 
 
@@ -9,7 +10,7 @@
 Sniper::Sniper(Vector2 pos,float blindR,float sightR){
     dmg=1;
     shootSpeed=1;
-    health=1;
+    health=50;
     position=pos;
     bulletSpeed=70;
     shouldFire = false;
@@ -61,8 +62,10 @@ void Sniper::CalcShoot(Player player){
 };
 
 void Sniper::DrawSniper(Color c,Player player){
-    DrawRectangleRec(sniperRec,c);
-    UpdateSniper(player);
+    if(health >= 1) {
+        DrawRectangleRec(sniperRec,c);
+        UpdateSniper(player);
+    }
     
 //draw Bullet---------------------------------    
     if (shouldFire){
@@ -88,7 +91,7 @@ void Sniper::DrawSniper(Color c,Player player){
         if(CheckCollisionCircles({player.playerX+10,player.playerY+10},10,bulletPos,3)){
             player.currentHealth -=dmg;
             shouldFire = false;
-            
+        
         }
     }else {
         
@@ -99,7 +102,20 @@ void Sniper::DrawSniper(Color c,Player player){
 };
 
 void Sniper::UpdateSniper(Player player){
-    
+
+        int bulletCount = sizeof(player.bullets)/sizeof(player.bullets[0]);
+
+        // Collision Check
+        for (int k = 0; k < bulletCount; k++)
+        {
+            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 1.5f, 
+                                    {sniperRec.x,sniperRec.y}, 7.5f))
+                                    {
+                                        player.bullets[k].position = {0,0};
+                                        health -= 1;
+                                        player.bullets[k].range = 0;
+                                    }
+        }
     
         if (shootTimer < shootDelay) shootTimer+=5*GetFrameTime();
         else if(shootTimer >= shootDelay) {

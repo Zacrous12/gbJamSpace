@@ -1,7 +1,9 @@
 #include "Crusty.h"
+#include <stdio.h>
 
 Crusty::Crusty(Vector2 pos){
     position=pos;
+    health=100;
     
 }
 
@@ -44,8 +46,29 @@ void Crusty::Update(Player player){
 }
 
 void Crusty::Draw(Color c, Player player){
-    DrawRectangleV(position,{spriteWidth,spriteWidth},c);
-    Update(player);
+    if(health > 0){
+        DrawRectangleV(position,{spriteWidth,spriteWidth},c);
+        Update(player);
+    }
+
+    int bulletCount = sizeof(player.bullets)/sizeof(player.bullets[0]);
+
+
+    // Collision Check
+    for (int k = 0; k < bulletCount; k++)
+        {
+            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 1.5f, 
+                                    {position.x,position.y}, 10.0f))
+                                    {
+                                        player.bullets[k].position = {0,0};
+                                        health -= 1;
+                                        player.bullets[k].range = 0;
+                                    }
+        }
+
+        if(health <= 0){
+            printf("Sniper is dead\n");
+    }
     
 }
 

@@ -65,4 +65,5 @@ public:
     int boosts = 0;
     Bullet bullets[100];
     int shotCounter = 0;
+
 };

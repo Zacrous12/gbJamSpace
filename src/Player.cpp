@@ -145,12 +145,14 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
             wallJump = true;
         }
 
-    } else if(!canJump && jumpTimer < 2 && playerY < 140.0f) {
+    } else if(!canJump && jumpTimer < 2 && playerY < 140.0f) 
+    {
         playerY += 3.0f * gravity;
         gravity += 0.1f;
     }
 
-    if(IsKeyPressed(KEY_SPACE) && wallJump){
+    if(IsKeyPressed(KEY_SPACE) && wallJump)
+    {
         jumpTimer = 8;
         playerY -= 4.0f * gravity;
         gravity += 0.1f;
@@ -188,7 +190,8 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         }
     }
 
-    if (playerY >= 140.0f) {
+    if (playerY >= 140.0f) 
+    {
         playerY = 140.0f;
         canJump = true;
         wallJump = false;
@@ -197,14 +200,16 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
     sprite = { playerX, playerY + height, 20.0f, 20.0f - height };
     position = { playerX, playerY + height };
 
-    if (IsKeyPressed(KEY_K)){
+    if (IsKeyPressed(KEY_K))
+    {
         if(currentWeapon == PISTOL) currentWeapon = LASER;
         else if(currentWeapon == LASER) currentWeapon = FLAMETHROWER;
         else currentWeapon = PISTOL;
     }
 
     // Combat
-    if (IsKeyPressed(KEY_J)){
+    if (IsKeyPressed(KEY_J))
+    {
         if(currentWeapon == PISTOL){
             Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 1.0f, 10.0f);
         }else if(currentWeapon == LASER){
@@ -261,14 +266,14 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
 void Player::Draw()
 {
     int bulletCount = sizeof(bullets)/sizeof(bullets[0]);
+    
     for (int i = 0; i < bulletCount; i++)
     {
         if(bullets[i].range >= 0){
             DrawCircle(bullets[i].position.x, bullets[i].position.y, bullets[i].radius, bullets[i].color);
             bullets[i].position.x += bullets[i].speed;
             bullets[i].range -= 0.6f;
-        } else {
-        }
+        } 
     }
     
 }
