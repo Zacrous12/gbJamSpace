@@ -1,10 +1,10 @@
 #include <raylib.h>
 #include <math.h>
+#include <stdio.h>
 #include "raymath.h"
 #include "Player.h"
 #include "Sniper.h"
 #include "Crusty.h"
-#include <stdio.h>
 
 int main()
 {
@@ -34,12 +34,12 @@ int main()
 
     // TODO: MAKE BLOCKS COLLIDE WITH PLAYER
     EnvItem envItems[] = {
-        {{ 0, 0, 10, 4 }, 0, palette[3] },
-        {{ 0, 0, 10, 200 }, 1, palette[3] },
-        {{ 30, 130, 40, 10 }, 1, palette[3] },
-        {{ 50, 130, 10, 10 }, 1, palette[3] },
-        {{ 60, 130, 10, 10 }, 1, palette[3] },
-        {{ 100, 100, 100, 10}, 1, palette[3]}
+        {{ 0, 0, 10, 4 }, 0, palette[3], false },
+        {{ 0, 0, 10, 200 }, 1, palette[3], true },
+        {{ 30, 130, 40, 10 }, 1, palette[3], false },
+        {{ 50, 130, 10, 10 }, 1, palette[3], true },
+        {{ 60, 130, 10, 10 }, 1, palette[3], false },
+        {{ 100, 100, 100, 10}, 1, palette[3], true}
     }; 
 
     int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
@@ -95,6 +95,7 @@ int main()
                 
                 sniper.DrawSniper(palette[2],player);
                 crusty.Draw(palette[2],player);
+                player.Draw();
             
                 
                 DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
@@ -102,7 +103,7 @@ int main()
         EndTextureMode();
 
         BeginDrawing();
-            ClearBackground(palette[3]);
+            ClearBackground(palette[0]);
 
             BeginMode2D(screenSpaceCamera);
                 DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, palette[0]);

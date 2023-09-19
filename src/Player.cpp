@@ -7,12 +7,45 @@
 
 Player::Player()
 {
-    groundPound=false;
+    playerX = 10.0f;
+    playerY = 140.0f;
+    spriteWidth = 20.0f;
+    sprite = { playerX, playerY, spriteWidth, spriteWidth};
+    facingRight = true;
+    hitObstacle = false;
+    position = { playerX, playerY };
+
+    jumpHeight = 20.0f;
+    speed = 2.0f;
+    gravity = 0.5f;
+    jumpTimer = 0;
+    groundPound = false;
+    canJump = true;
+    isDucking = false;
+    canMoveRight = true;
+    canMoveLeft = true;
+    wallJump = false;
+    height = 0.0f;
+    sprintTimeDefault = 20;
+    sprintTimerLeft = 0;
+    sprintTimerRight = 0;
+    isSprinting = false;
+    doubleTapRight = 0;
+    doubleTapLeft = 0;
+
+    currentHealth = 100;
+    maxHealth = 100;
+    currentSpecial = 0;
+    maxSpecial = 100;
+    currentWeapon = PISTOL;
+    boosts = 0;
+    shotCounter = 0;
 }
 
 void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
 {
     if(IsKeyPressed(KEY_D)) {
+        facingRight = true;
         if(sprintTimerRight > 0) {
             isSprinting = true;            
         }
@@ -22,6 +55,7 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
     }
 
     if(IsKeyPressed(KEY_A)) {
+        facingRight = false;
         if(sprintTimerLeft > 0) {
             isSprinting = true;            
         }
@@ -60,7 +94,7 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         if(canMoveRight) playerX += speed;
     } 
     if(IsKeyDown(KEY_A)) {
-                if(isSprinting) {
+        if(isSprinting) {
             speed = 3.0f;
         } else {
             speed = 2.0f;
@@ -90,15 +124,14 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
 
     if(IsKeyReleased(KEY_D)){
         isSprinting = false;
-        facingRight = true;
     } 
     if (IsKeyReleased(KEY_A)) {
         isSprinting = false;
-        facingRight = false;
     }
 
-    if(IsKeyDown(KEY_S)) isDucking = true, height = 10.0f;
-    else isDucking = false, height = 0.0f;
+    // Ducking is bugged on platforms
+    // if(IsKeyDown(KEY_S)) isDucking = true, height = 10.0f;
+    // else isDucking = false, height = 0.0f;
 
     if (canJump && IsKeyPressed(KEY_SPACE))
     {
@@ -130,10 +163,7 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
     if (IsKeyPressed(KEY_SPACE) && jumpTimer < 10 && jumpTimer > 0 && canMoveLeft && canMoveRight){
         jumpTimer = 20;
         groundPound = true;
-        printf("Ground Pound\n");
     }
-
-    if (playerY >= 140.0f) playerY = 140.0f;
 
     if(jumpTimer > 0)
     {
@@ -158,11 +188,32 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         }
     }
 
-    if(playerY >= 140.0f) canJump = true;
+    if (playerY >= 140.0f) {
+        playerY = 140.0f;
+        canJump = true;
+        wallJump = false;
+    }
 
     sprite = { playerX, playerY + height, 20.0f, 20.0f - height };
     position = { playerX, playerY + height };
 
+    if (IsKeyPressed(KEY_K)){
+        if(currentWeapon == PISTOL) currentWeapon = LASER;
+        else if(currentWeapon == LASER) currentWeapon = FLAMETHROWER;
+        else currentWeapon = PISTOL;
+    }
+
+    // Combat
+    if (IsKeyPressed(KEY_J)){
+        if(currentWeapon == PISTOL){
+            Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 1.0f, 10.0f);
+        }else if(currentWeapon == LASER){
+            Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 2.0f, 25.0f);
+        }else {
+            Shoot(facingRight, 2.0f, position, GetColor(0x8be5ffff), 4.0f, 5.0f);
+        }
+    }
+    
     // Collision
     hitObstacle = false;
     for (int i = 0; i < envItemsLength; i++)
@@ -183,11 +234,53 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
     {
         playerY += speed*deltaTime;
         speed += gravity*deltaTime;
+        canMoveRight = true;
+        canMoveLeft = true;
     }
     else canJump = true;
+
+    if (IsKeyDown(KEY_SPACE)) {
+        for (int i = 0; i < envItemsLength; i++) {
+            EnvItem *ei = envItems + i;
+            if (ei->blocking &&
+                playerY - speed < ei->rect.y + ei->rect.height &&
+                playerY + 20 - speed > ei->rect.y &&
+                playerX + sprite.width > ei->rect.x &&
+                playerX < ei->rect.x + ei->rect.width) {
+                if (!ei->isJumpThrough && jumpTimer > 0) {
+                    jumpTimer = 0; // Prevent jumping if there's a platform above
+                    playerY = ei->rect.y + ei->rect.height; // Snap player to platform
+                }
+                break; // No need to check further if collision is detected
+            }
+        }
+    }
+
 }
 
 void Player::Draw()
 {
+    int bulletCount = sizeof(bullets)/sizeof(bullets[0]);
+    for (int i = 0; i < bulletCount; i++)
+    {
+        if(bullets[i].range >= 0){
+            DrawCircle(bullets[i].position.x, bullets[i].position.y, bullets[i].radius, bullets[i].color);
+            bullets[i].position.x += bullets[i].speed;
+            bullets[i].range -= 0.6f;
+        } else {
+        }
+    }
+    
+}
 
+void Player::Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range)
+{
+    if(isRight) pos = {pos.x + 20.0f, pos.y};
+    else speed = -speed;
+
+    pos.y += 9.0f;
+
+    bullets[shotCounter] = {isRight, speed, pos, col, rad, range};
+    shotCounter++;
+    if(shotCounter > 9) shotCounter = 0;
 }

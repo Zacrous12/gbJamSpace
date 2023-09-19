@@ -6,9 +6,19 @@ typedef struct EnvItem {
     Rectangle rect;
     int blocking;
     Color color;
+    bool isJumpThrough;
 } EnvItem;
 
-enum Weapon { PISTOL, SHOTGUN, MACHINEGUN, ROCKETLAUNCHER };
+typedef struct Bullet {
+    bool isRight;
+    float speed;
+    Vector2 position;
+    Color color;
+    float radius;
+    float range;
+} Bullet;
+
+enum Weapon { PISTOL, LASER, FLAMETHROWER };
 
 class Player
 {
@@ -16,12 +26,13 @@ public:
     Player();
     void Draw();
     void Update(float deltaTime, EnvItem *envItems, int envItemsLength);
+    void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range);
 
     // POSITION
     float playerX = 10.0f;
     float playerY = 140.0f;
     float spriteWidth = 20.0f;
-    Rectangle sprite = { playerX, playerY, spriteWidth,spriteWidth};
+    Rectangle sprite = { playerX, playerY, spriteWidth, spriteWidth};
     bool facingRight = true;
     bool hitObstacle = false;
     Vector2 position = { playerX, playerY };
@@ -52,4 +63,6 @@ public:
     int maxSpecial = 100;
     Weapon currentWeapon = PISTOL;
     int boosts = 0;
+    Bullet bullets[100];
+    int shotCounter = 0;
 };
