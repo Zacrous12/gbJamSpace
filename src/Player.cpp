@@ -133,7 +133,7 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         printf("Ground Pound\n");
     }
 
-    if (playerY > 141.0f) playerY = 140.0f;
+    if (playerY >= 140.0f) playerY = 140.0f;
 
     if(jumpTimer > 0)
     {
