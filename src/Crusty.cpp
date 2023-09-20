@@ -72,7 +72,7 @@ void Crusty::Draw(Color c, Player player){
     
 }
 
-void Crusty::Damage(Player player) {
+void Crusty::Damage(Player &player) {
     if(!hasShell){
     //deal damage to player
     }

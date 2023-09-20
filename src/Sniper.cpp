@@ -8,7 +8,7 @@
 
 
 Sniper::Sniper(Vector2 pos,float blindR,float sightR){
-    dmg=1;
+    dmg=1.0f;
     shootSpeed=1;
     health=50;
     position=pos;
@@ -61,12 +61,13 @@ void Sniper::CalcShoot(Player player){
 
 };
 
-void Sniper::DrawSniper(Color c,Player player){
+void Sniper::DrawSniper(Color c,Player &player){
     if(health >= 1) {
         DrawRectangleRec(sniperRec,c);
         UpdateSniper(player);
     }
-    
+
+
 //draw Bullet---------------------------------    
     if (shouldFire){
         
@@ -90,6 +91,7 @@ void Sniper::DrawSniper(Color c,Player player){
         DrawCircleV(bulletPos,3,BLACK);
         if(CheckCollisionCircles({player.playerX+10,player.playerY+10},10,bulletPos,3)){
             player.currentHealth -=dmg;
+            printf("Player Health: %d\n",player.currentHealth);
             shouldFire = false;
         
         }

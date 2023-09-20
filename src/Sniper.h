@@ -32,7 +32,7 @@ class Sniper{
     Sniper(Vector2 pos,float blindR,float sightR);
     void CalcShoot(Player player);
     void UpdateSniper(Player player);
-    void DrawSniper(Color c,Player player);
+    void DrawSniper(Color c,Player &player);
     
 
 };

@@ -22,5 +22,5 @@ class Crusty {
     Crusty(Vector2 pos);
     void Update(Player player);
     void Draw(Color c,Player player);
-    void Damage(Player player);
+    void Damage(Player &player);
 };

@@ -51,6 +51,7 @@ int main()
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
     Player player = Player();
+    Player *p = &player;
     Sniper sniper = Sniper({60,115},25,100);
     Crusty crusty = Crusty ({100,140});
 
@@ -90,8 +91,8 @@ int main()
             BeginMode2D(worldSpaceCamera);
                 for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, palette[3]);
 
-                sniper.DrawSniper(palette[2],player);
-                crusty.Draw(palette[2],player);
+                sniper.DrawSniper(palette[2], *p);
+                crusty.Draw(palette[2], *p);
                 player.Draw();
                 
                 DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
