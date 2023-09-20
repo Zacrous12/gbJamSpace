@@ -7,28 +7,98 @@
 #include "Sniper.h"
 #include "Crusty.h"
 
+const int screenWidth = 640;
+const int screenHeight = 576;
+
+const int virtualScreenWidth = 160;
+const int virtualScreenHeight = 144;
+
+const float virtualRatio = (float)screenWidth/(float)virtualScreenWidth;
+
+Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
+
+enum class GameScreen { TITLE, GAMEPLAY, BOSS, ENDING, PAUSE };
+GameScreen currentScreen = GameScreen::GAMEPLAY;
+
+class TitleScreen
+{
+    public:
+    void Draw() {
+        if (IsKeyPressed(KEY_ENTER)) currentScreen = GameScreen::GAMEPLAY;
+        DrawText("Space Burgers", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
+        DrawText("START", virtualScreenWidth/2, virtualScreenHeight/2 + 20, 8, palette[3]);
+        DrawText("OPTIONS", virtualScreenWidth/2, virtualScreenHeight/2 + 40, 8, palette[3]);
+    }
+};
+TitleScreen title;
+
+class GameOverScreen
+{
+    public:
+    void Draw() {
+        if(aWinnerIsYou)
+        {
+            DrawText("Congratulations!", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
+        } else 
+        {
+            DrawText("GAME OVER", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
+            DrawText("RESTART", virtualScreenWidth/2, virtualScreenHeight/2 + 20, 8, palette[3]);
+            DrawText("Quit to Main Menu", virtualScreenWidth/2, virtualScreenHeight/2 + 40, 8, palette[3]);
+            if(selectRestart) DrawRectangleLines(virtualScreenWidth/2 - 50, virtualScreenHeight/2 + 20, 100, 10, palette[3]);
+            else DrawRectangleLines(virtualScreenWidth/2 - 50, virtualScreenHeight/2 + 40, 100, 10, palette[3]);
+        }
+    //    if(IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) selectRestart = !selectRestart, PlaySound(menuBlip);
+
+    }
+
+    bool aWinnerIsYou = false;
+    bool selectRestart = true;
+};
+GameOverScreen gameOver;
+
+void StartGame()
+{
+    currentScreen = GameScreen::GAMEPLAY;
+    //StopMusicStream(mainMenu);
+    // InitGame();
+}
+
+void PauseGame()
+{
+    currentScreen = GameScreen::PAUSE;
+}
+
+void ResumeGame()
+{
+    currentScreen = GameScreen::GAMEPLAY;
+    // PlayGame();
+}
+
+void WinGame(bool won)
+{
+    gameOver.aWinnerIsYou = won;
+    currentScreen = GameScreen::ENDING;
+}
+
+
 int main()
 {
 
-    const int screenWidth = 640;
-    const int screenHeight = 576;
-
-    const int virtualScreenWidth = 160;
-    const int virtualScreenHeight = 144;
-
-    const float virtualRatio = (float)screenWidth/(float)virtualScreenWidth;
-
     InitWindow(screenWidth, screenHeight, "Untitled");
     InitAudioDevice();
-    Music track = LoadMusicStream("C:/Users/zrouh/Music/Projects/roshe.mp3");
-    //PlayMusicStream(track);
-    track.looping = true;
+    //Music menuMusic = LoadMusicStream("sounds/mainMenu.mp3");
+    //PlayMusicStream(menuMusic);
+    //menuMusic.looping = true;
+    Sound menuBlip = LoadSound("sounds/menuBlip.wav");
 
     std::vector<int> myVector;
 
     SetTargetFPS(60);
 
-    Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
+    // Image icon = LoadImage("icons/Pictures/Untitled.png"); WINDOW ICON
+    // ImageFormat(&icon, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+    // SetWindowIcon(icon);
+    // UnloadImage(icon);
 
     Player player = Player(0.0f,0.0f);
     std::vector<Sniper> snipers;
@@ -53,8 +123,7 @@ int main()
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
     };
 
-    // BLOCKS
-    // Height and width will always be 16 pixels
+    // BLOCKS ** Height and width will always be 16 pixels **
     std::vector<EnvItem> envItems;
 
     for (int y = 0; y < mapHeight; ++y)
@@ -68,7 +137,7 @@ int main()
                 float cellX = (mapX + cellSize * x);
                 float cellY = (mapY + cellSize * y);
                 if(tile == 1){
-                    Color c = (i - mapWidth >= 0 && !tileMap[i - mapWidth]) ? palette[3] : palette[2]; // Checks for block above
+                    Color c = (i - mapWidth >= 0 && tileMap[i - mapWidth] == 1) ? palette[3] : palette[2]; // Checks for block above
                     envItems.push_back(EnvItem({{(int)cellX, (int)cellY, cellSize, cellSize}, 1, c}));
                 }
                 else if(tile == 2){
@@ -92,6 +161,7 @@ int main()
     int envItemsLength = envItems.size();
     int sniperLength = snipers.size();
     int crustyLength = crusties.size();
+    Player *p = &player;
 
     // HOW TO ADD SPRITES:
     // Texture2D mySprite = LoadTexture("C:/Users/zrouh/OneDrive/Pictures/Untitled.png");
@@ -105,8 +175,6 @@ int main()
 
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
-    Player *p = &player;
-
     Rectangle sourceRec = { 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height };
     Rectangle destRec = { -virtualRatio, -virtualRatio, screenWidth + (virtualRatio*2), screenHeight + (virtualRatio*2) };
 
@@ -118,6 +186,29 @@ int main()
 
     while (!WindowShouldClose())
     {
+        // switch (currentScreen)
+        // {
+        // case GameScreen::TITLE:
+        //     UpdateTitle();
+        //     break;
+        
+        // case GameScreen::GAMEPLAY:
+        //     UpdateGameplay();
+        //     break;
+
+        // case GameScreen::BOSS:
+        //     UpdateBoss();
+        //     break;
+
+        // case GameScreen::PAUSE:
+        //     UpdatePause();
+        //     break;
+
+        // case GameScreen::ENDING:
+        //     UpdateEnding();
+        //     break;
+
+        // }
         float deltaTime = GetFrameTime();
 
         player.Update(deltaTime, envItemsPtr, envItemsLength);
@@ -171,9 +262,7 @@ int main()
         EndDrawing();
     }
 
-    UnloadMusicStream(track);
     CloseAudioDevice();
-
     CloseWindow();
     return 0;
 }
