@@ -1,12 +1,13 @@
 #pragma once
 #include <raylib.h>
 #include "raymath.h"
+#include <vector>
+
 
 typedef struct EnvItem {
     Rectangle rect;
     int blocking;
     Color color;
-    bool isJumpThrough;
 } EnvItem;
 
 typedef struct Bullet {
@@ -23,9 +24,9 @@ enum Weapon { PISTOL, LASER, FLAMETHROWER };
 class Player
 {
 public:
-    Player();
+    Player(float x, float y);
     void Draw();
-    void Update(float deltaTime, EnvItem *envItems, int envItemsLength);
+    void Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength);
     void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range);
 
     // POSITION

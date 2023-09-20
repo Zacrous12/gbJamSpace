@@ -1,14 +1,12 @@
 #include "Player.h"
 #include <raylib.h>
 #include <stdio.h>
+#include <vector>
 
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-
-Player::Player()
+Player::Player(float x, float y)
 {
-    playerX = 10.0f;
-    playerY = 140.0f;
+    playerX = x;
+    playerY = y;
     spriteWidth = 20.0f;
     sprite = { playerX, playerY, spriteWidth, spriteWidth};
     facingRight = true;
@@ -42,7 +40,7 @@ Player::Player()
     shotCounter = 0;
 }
 
-void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
+void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength)
 {
     if(IsKeyPressed(KEY_D)) {
         facingRight = true;
@@ -75,12 +73,12 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         }
         canMoveRight = true;
         for (int i = 0; i < envItemsLength; i++) {
-        EnvItem *ei = envItems + i;
-        if (ei->blocking &&
-            playerX + speed < ei->rect.x + ei->rect.width &&
-            playerX + 20 + speed > ei->rect.x &&
-            playerY + sprite.height > ei->rect.y &&
-            playerY < ei->rect.y + ei->rect.height) {
+        EnvItem &ei = (*envItems)[i];
+        if (ei.blocking &&
+            playerX + speed < ei.rect.x + ei.rect.width &&
+            playerX + 20 + speed > ei.rect.x &&
+            playerY + sprite.height > ei.rect.y &&
+            playerY < ei.rect.y + ei.rect.height) {
             canMoveRight = false;
             gravity = 0.1f;
             if (IsKeyPressed(KEY_SPACE))
@@ -101,12 +99,12 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         }
         canMoveLeft = true;
         for (int i = 0; i < envItemsLength; i++) {
-            EnvItem *ei = envItems + i;
-            if (ei->blocking &&
-                playerX - speed < ei->rect.x + ei->rect.width &&
-                playerX + 20 - speed > ei->rect.x &&
-                playerY + sprite.height > ei->rect.y &&
-                playerY < ei->rect.y + ei->rect.height) {
+            EnvItem& ei = (*envItems)[i];
+            if (ei.blocking &&
+                playerX - speed < ei.rect.x + ei.rect.width &&
+                playerX + 20 - speed > ei.rect.x &&
+                playerY + sprite.height > ei.rect.y &&
+                playerY < ei.rect.y + ei.rect.height) {
                 canMoveLeft = false;
                 gravity = 0.1f;
                 if (IsKeyPressed(KEY_SPACE))
@@ -223,15 +221,15 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
     hitObstacle = false;
     for (int i = 0; i < envItemsLength; i++)
     {
-        EnvItem *ei = envItems + i;
-        if (ei->blocking &&
-            playerX < ei->rect.x + ei->rect.width &&
-            playerX + 20 > ei->rect.x &&
-            playerY + sprite.height > ei->rect.y &&
-            playerY < ei->rect.y + ei->rect.height) {
+        EnvItem& ei = (*envItems)[i];
+        if (ei.blocking &&
+            playerX < ei.rect.x + ei.rect.width &&
+            playerX + 20 > ei.rect.x &&
+            playerY + sprite.height > ei.rect.y &&
+            playerY < ei.rect.y + ei.rect.height) {
             hitObstacle = 1;
             speed = 0.0f;
-            playerY = ei->rect.y - sprite.height;
+            playerY = ei.rect.y - sprite.height;
         }
     }
 
@@ -243,23 +241,6 @@ void Player::Update(float deltaTime, EnvItem *envItems, int envItemsLength)
         canMoveLeft = true;
     }
     else canJump = true;
-
-    if (IsKeyDown(KEY_SPACE)) {
-        for (int i = 0; i < envItemsLength; i++) {
-            EnvItem *ei = envItems + i;
-            if (ei->blocking &&
-                playerY - speed < ei->rect.y + ei->rect.height &&
-                playerY + 20 - speed > ei->rect.y &&
-                playerX + sprite.width > ei->rect.x &&
-                playerX < ei->rect.x + ei->rect.width) {
-                if (!ei->isJumpThrough && jumpTimer > 0) {
-                    jumpTimer = 0; // Prevent jumping if there's a platform above
-                    playerY = ei->rect.y + ei->rect.height; // Snap player to platform
-                }
-                break; // No need to check further if collision is detected
-            }
-        }
-    }
 
 }
 

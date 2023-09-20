@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <math.h>
 #include <stdio.h>
+#include <vector>
 #include "raymath.h"
 #include "Player.h"
 #include "Sniper.h"
@@ -23,24 +24,76 @@ int main()
     //PlayMusicStream(track);
     track.looping = true;
 
+    std::vector<int> myVector;
+
     SetTargetFPS(60);
 
     Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
+    Player player = Player(0.0f,0.0f);
+    std::vector<Sniper> snipers;
+    std::vector<Crusty> crusties;
+
+    // MAP VARIABLES
+    int mapWidth = 64;
+    int mapHeight = 10;
+    int cellSize = 16;
+    float mapX = 0.0f;
+    float mapY = 0.0f;
+    int tileMap[] = {
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,3,0,0,0,0,3,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+    };
+
+    // BLOCKS
+    // Height and width will always be 16 pixels
+    std::vector<EnvItem> envItems;
+
+    for (int y = 0; y < mapHeight; ++y)
+    {
+        for (int x = 0; x < mapWidth; ++x)
+        {
+            int i = x + y * mapWidth;
+            int tile = tileMap[i];
+            
+            if(tile){
+                float cellX = (mapX + cellSize * x);
+                float cellY = (mapY + cellSize * y);
+                if(tile == 1){
+                    Color c = (i - mapWidth >= 0 && !tileMap[i - mapWidth]) ? palette[3] : palette[2];
+                    envItems.push_back(EnvItem({{x*cellSize, y*cellSize, cellSize, cellSize}, 1, c}));
+                }
+                else if(tile == 2){
+                    player.playerX = x*cellSize;
+                    player.playerY = y*cellSize;
+                }
+                
+                else if(tile == 3){
+                    snipers.push_back(Sniper({x*cellSize, y*cellSize},25,100));
+                }
+
+                else if(tile == 4){
+                    crusties.push_back(Crusty({x*cellSize, y*cellSize}));
+                    break;
+                }
+            }
+        }
+    }
+    
+    std::vector<EnvItem> *envItemsPtr = &envItems;
+    int envItemsLength = envItems.size();
+
     // HOW TO ADD SPRITES:
     // Texture2D mySprite = LoadTexture("C:/Users/zrouh/OneDrive/Pictures/Untitled.png");
     // THEN CALL DrawTexture(mySprite, 0(posX), 0(posY), WHITE(tint));
-
-    EnvItem envItems[] = {
-        {{ 0, 0, 10, 4 }, 0, palette[3], false },
-        {{ 0, 0, 10, 200 }, 1, palette[3], true },
-        {{ 30, 130, 40, 10 }, 1, palette[3], false },
-        {{ 50, 130, 10, 10 }, 1, palette[3], true },
-        {{ 60, 130, 10, 10 }, 1, palette[3], false },
-        {{ 100, 100, 100, 10}, 1, palette[3], true}
-    }; 
-
-    int envItemsLength = sizeof(envItems)/sizeof(envItems[0]);
 
     Camera2D worldSpaceCamera = { 0 };  // Game world camera
     worldSpaceCamera.zoom = 1.0f;
@@ -50,7 +103,6 @@ int main()
 
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
-    Player player = Player();
     Player *p = &player;
     Sniper sniper = Sniper({60,115},25,100);
     Crusty crusty = Crusty ({100,140});
@@ -68,7 +120,7 @@ int main()
     {
         float deltaTime = GetFrameTime();
 
-        player.Update(deltaTime, envItems, envItemsLength);
+        player.Update(deltaTime, envItemsPtr, envItemsLength);
 
         cameraX = player.playerX - 70.0f;
         cameraY = 32.0f;
@@ -89,7 +141,7 @@ int main()
             ClearBackground(palette[0]);
 
             BeginMode2D(worldSpaceCamera);
-                for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, palette[3]);
+                for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, envItems[i].color);
 
                 sniper.DrawSniper(palette[2], *p);
                 crusty.Draw(palette[2], *p);
