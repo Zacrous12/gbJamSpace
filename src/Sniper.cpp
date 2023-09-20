@@ -91,7 +91,6 @@ void Sniper::DrawSniper(Color c,Player &player){
         DrawCircleV(bulletPos,3,BLACK);
         if(CheckCollisionCircles({player.playerX+10,player.playerY+10},10,bulletPos,3)){
             player.currentHealth -=dmg;
-            printf("Player Health: %d\n",player.currentHealth);
             shouldFire = false;
         
         }
@@ -117,6 +116,10 @@ void Sniper::UpdateSniper(Player player){
                                         health -= 1;
                                         player.bullets[k].range = 0;
                                     }
+        }
+
+        if(health <= 0){
+            //killSniper()
         }
     
         if (shootTimer < shootDelay) shootTimer+=5*GetFrameTime();

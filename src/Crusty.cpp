@@ -67,8 +67,8 @@ void Crusty::Draw(Color c, Player player){
         }
 
         if(health <= 0){
-            printf("Sniper is dead\n");
-    }
+            //killCrusty()
+        }
     
 }
 

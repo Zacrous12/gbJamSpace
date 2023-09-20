@@ -68,8 +68,8 @@ int main()
                 float cellX = (mapX + cellSize * x);
                 float cellY = (mapY + cellSize * y);
                 if(tile == 1){
-                    Color c = (i - mapWidth >= 0 && !tileMap[i - mapWidth]) ? palette[3] : palette[2];
-                    envItems.push_back(EnvItem({{x*cellSize, y*cellSize, cellSize, cellSize}, 1, c}));
+                    Color c = (i - mapWidth >= 0 && !tileMap[i - mapWidth]) ? palette[3] : palette[2]; // Checks for block above
+                    envItems.push_back(EnvItem({{(int)cellX, (int)cellY, cellSize, cellSize}, 1, c}));
                 }
                 else if(tile == 2){
                     player.playerX = x*cellSize;
@@ -77,7 +77,7 @@ int main()
                 }
                 
                 else if(tile == 3){
-                    snipers.push_back(Sniper({x*cellSize, y*cellSize},25,100));
+                    snipers.push_back(Sniper({x*cellSize, y*cellSize + 0.5f},25,100));
                 }
 
                 else if(tile == 4){
@@ -90,6 +90,8 @@ int main()
     
     std::vector<EnvItem> *envItemsPtr = &envItems;
     int envItemsLength = envItems.size();
+    int sniperLength = snipers.size();
+    int crustyLength = crusties.size();
 
     // HOW TO ADD SPRITES:
     // Texture2D mySprite = LoadTexture("C:/Users/zrouh/OneDrive/Pictures/Untitled.png");
@@ -104,8 +106,6 @@ int main()
     RenderTexture2D target = LoadRenderTexture(virtualScreenWidth, virtualScreenHeight);
 
     Player *p = &player;
-    Sniper sniper = Sniper({60,115},25,100);
-    Crusty crusty = Crusty ({100,140});
 
     Rectangle sourceRec = { 0.0f, 0.0f, (float)target.texture.width, -(float)target.texture.height };
     Rectangle destRec = { -virtualRatio, -virtualRatio, screenWidth + (virtualRatio*2), screenHeight + (virtualRatio*2) };
@@ -143,8 +143,9 @@ int main()
             BeginMode2D(worldSpaceCamera);
                 for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, envItems[i].color);
 
-                sniper.DrawSniper(palette[2], *p);
-                crusty.Draw(palette[2], *p);
+                for (int i = 0; i < sniperLength; ++i) snipers[i].DrawSniper(palette[2], *p);
+
+                for (int i = 0; i < crustyLength; ++i) crusties[i].Draw(palette[2], *p);
                 player.Draw();
                 
                 DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
