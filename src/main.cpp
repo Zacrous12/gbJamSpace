@@ -89,7 +89,7 @@ int main()
     //Music menuMusic = LoadMusicStream("sounds/mainMenu.mp3");
     //PlayMusicStream(menuMusic);
     //menuMusic.looping = true;
-    Sound menuBlip = LoadSound("_resources/sounds/menuBlip.wav");
+    Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
 
     std::vector<int> myVector;
 
@@ -107,16 +107,16 @@ int main()
         
 
     // HOW TO ADD SPRITES:
-    Texture2D backTile1 = LoadTexture("_resources/textures/backTile1.png");
-    Texture2D backTile2 = LoadTexture("_resources/textures/backTile2.png");
-    Texture2D backTile3 = LoadTexture("_resources/textures/backTile3.png");
-    Texture2D backTile4 = LoadTexture("_resources/textures/backTile4.png");
-    Texture2D backTile5 = LoadTexture("_resources/textures/backTile5.png");
-    Texture2D backTile6 = LoadTexture("_resources/textures/backTile6.png");
-    Texture2D backTile7 = LoadTexture("_resources/textures/backTile7.png");
-    Texture2D backTile8 = LoadTexture("_resources/textures/backTile8.png");
-    Texture2D backTile9 = LoadTexture("_resources/textures/backTile9.png");
-    Texture2D floor32 = LoadTexture("_resources/textures/32x32_floor.png");
+    Texture2D backTile1 = LoadTexture("src/_resources/textures/backTile1.png");
+    Texture2D backTile2 = LoadTexture("src/_resources/textures/backTile2.png");
+    Texture2D backTile3 = LoadTexture("src/_resources/textures/backTile3.png");
+    Texture2D backTile4 = LoadTexture("src/_resources/textures/backTile4.png");
+    Texture2D backTile5 = LoadTexture("src/_resources/textures/backTile5.png");
+    Texture2D backTile6 = LoadTexture("src/_resources/textures/backTile6.png");
+    Texture2D backTile7 = LoadTexture("src/_resources/textures/backTile7.png");
+    Texture2D backTile8 = LoadTexture("src/_resources/textures/backTile8.png");
+    Texture2D backTile9 = LoadTexture("src/_resources/textures/backTile9.png");
+    Texture2D floor32 = LoadTexture("src/_resources/textures/32x32_floor.png");
     // THEN CALL DrawTexture(backtile1, 0(posX), 0(posY), WHITE(tint));
 
     // MAP VARIABLES
