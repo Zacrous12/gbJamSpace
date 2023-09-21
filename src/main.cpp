@@ -89,7 +89,7 @@ int main()
     //Music menuMusic = LoadMusicStream("sounds/mainMenu.mp3");
     //PlayMusicStream(menuMusic);
     //menuMusic.looping = true;
-    Sound menuBlip = LoadSound("sounds/menuBlip.wav");
+    Sound menuBlip = LoadSound("_resources/sounds/menuBlip.wav");
 
     std::vector<int> myVector;
 
@@ -103,6 +103,21 @@ int main()
     Player player = Player(0.0f,0.0f);
     std::vector<Sniper> snipers;
     std::vector<Crusty> crusties;
+    //std::vector<Vector2> ground;
+        
+
+    // HOW TO ADD SPRITES:
+    Texture2D backTile1 = LoadTexture("_resources/textures/backTile1.png");
+    Texture2D backTile2 = LoadTexture("_resources/textures/backTile2.png");
+    Texture2D backTile3 = LoadTexture("_resources/textures/backTile3.png");
+    Texture2D backTile4 = LoadTexture("_resources/textures/backTile4.png");
+    Texture2D backTile5 = LoadTexture("_resources/textures/backTile5.png");
+    Texture2D backTile6 = LoadTexture("_resources/textures/backTile6.png");
+    Texture2D backTile7 = LoadTexture("_resources/textures/backTile7.png");
+    Texture2D backTile8 = LoadTexture("_resources/textures/backTile8.png");
+    Texture2D backTile9 = LoadTexture("_resources/textures/backTile9.png");
+    Texture2D floor32 = LoadTexture("_resources/textures/32x32_floor.png");
+    // THEN CALL DrawTexture(backtile1, 0(posX), 0(posY), WHITE(tint));
 
     // MAP VARIABLES
     int mapWidth = 64;
@@ -123,7 +138,7 @@ int main()
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
     };
 
-    // BLOCKS ** Height and width will always be 16 pixels **
+    // BLOCKS ** Height and width will always be 32 pixels **
     std::vector<EnvItem> envItems;
 
     for (float y = 0; y < mapHeight; ++y)
@@ -153,7 +168,7 @@ int main()
                     crusties.push_back(Crusty({x*cellSize, y*cellSize}));
                     break;
                 }
-            }
+            } 
         }
     }
     
@@ -162,10 +177,6 @@ int main()
     int sniperLength = snipers.size();
     int crustyLength = crusties.size();
     Player *p = &player;
-
-    // HOW TO ADD SPRITES:
-    // Texture2D mySprite = LoadTexture("C:/Users/zrouh/OneDrive/Pictures/Untitled.png");
-    // THEN CALL DrawTexture(mySprite, 0(posX), 0(posY), WHITE(tint));
 
     Camera2D worldSpaceCamera = { 0 };  // Game world camera
     worldSpaceCamera.zoom = 1.0f;
@@ -232,7 +243,11 @@ int main()
             ClearBackground(palette[0]);
 
             BeginMode2D(worldSpaceCamera);
-                for (int i = 0; i < envItemsLength; i++) DrawRectangleRec(envItems[i].rect, envItems[i].color);
+                for (int x = 0; x < mapWidth; ++x){
+                    for (int i = 0; i < mapHeight; ++i) DrawTexture(backTile9, x*16, i*16, WHITE);
+                }
+
+                for (int i = 0; i < envItemsLength; i++) DrawTextureRec(floor32, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, envItems[i].color);
 
                 for (int i = 0; i < sniperLength; ++i) snipers[i].DrawSniper(palette[2], *p);
 
