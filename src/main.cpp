@@ -107,7 +107,7 @@ int main()
     // MAP VARIABLES
     int mapWidth = 64;
     int mapHeight = 10;
-    int cellSize = 16;
+    float cellSize = 16;
     float mapX = 0.0f;
     float mapY = 0.0f;
     int tileMap[] = {
@@ -126,9 +126,9 @@ int main()
     // BLOCKS ** Height and width will always be 16 pixels **
     std::vector<EnvItem> envItems;
 
-    for (int y = 0; y < mapHeight; ++y)
+    for (float y = 0; y < mapHeight; ++y)
     {
-        for (int x = 0; x < mapWidth; ++x)
+        for (float x = 0; x < mapWidth; ++x)
         {
             int i = x + y * mapWidth;
             int tile = tileMap[i];
@@ -138,7 +138,7 @@ int main()
                 float cellY = (mapY + cellSize * y);
                 if(tile == 1){
                     Color c = (i - mapWidth >= 0 && tileMap[i - mapWidth] == 1) ? palette[3] : palette[2]; // Checks for block above
-                    envItems.push_back(EnvItem({{(int)cellX, (int)cellY, cellSize, cellSize}, 1, c}));
+                    envItems.push_back(EnvItem({{cellX, cellY, cellSize, cellSize}, 1, c}));
                 }
                 else if(tile == 2){
                     player.playerX = x*cellSize;
