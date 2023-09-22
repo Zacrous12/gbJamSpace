@@ -3,7 +3,6 @@
 #include "raymath.h"
 #include <vector>
 
-
 typedef struct EnvItem {
     Rectangle rect;
     int blocking;
@@ -19,7 +18,7 @@ typedef struct Bullet {
     float range;
 } Bullet;
 
-enum Weapon { PISTOL, LASER, FLAMETHROWER };
+enum Weapon { PISTOL, LASER, FLAMETHROWER, SPACE };
 
 class Player
 {

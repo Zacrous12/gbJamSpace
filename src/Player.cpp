@@ -202,6 +202,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
     {
         if(currentWeapon == PISTOL) currentWeapon = LASER;
         else if(currentWeapon == LASER) currentWeapon = FLAMETHROWER;
+        else if(currentWeapon == FLAMETHROWER) currentWeapon = SPACE;
         else currentWeapon = PISTOL;
     }
 
@@ -212,8 +213,10 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
             Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 1.0f, 10.0f);
         }else if(currentWeapon == LASER){
             Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 2.0f, 25.0f);
-        }else {
+        }else if(currentWeapon == FLAMETHROWER){
             Shoot(facingRight, 2.0f, position, GetColor(0x8be5ffff), 4.0f, 5.0f);
+        }else if(currentWeapon == SPACE){
+            Shoot(facingRight, 4.0f, position, GetColor(0x622e4cff), 3.0f, 40.0f);
         }
     }
     
