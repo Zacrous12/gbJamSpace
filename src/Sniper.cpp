@@ -14,7 +14,7 @@ Sniper::Sniper(Vector2 pos,float blindR,float sightR){
     position=pos;
     bulletSpeed=70;
     shouldFire = false;
-    spriteWidth=15;
+    spriteWidth=32;
     sniperRec.height=spriteWidth;
     sniperRec.width=spriteWidth;
     sniperRec.x=position.x;
@@ -61,9 +61,9 @@ void Sniper::CalcShoot(Player player){
 
 };
 
-void Sniper::DrawSniper(Color c,Player &player){
+void Sniper::DrawSniper(Texture2D t,Player &player){
     if(health >= 1) {
-        DrawRectangleRec(sniperRec,c);
+        DrawTextureRec(t,sniperRec,position,WHITE);
         UpdateSniper(player);
     }
 

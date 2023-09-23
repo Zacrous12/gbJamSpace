@@ -70,26 +70,8 @@ int main()
     Player player = Player(0.0f,0.0f);
     std::vector<Sniper> snipers;
     std::vector<Crusty> crusties;
-    //std::vector<Vector2> ground;
-        
 
-    // Texture2D backTile1 = LoadTexture("src/_resources/textures/backTile1.png");
-    // Texture2D backTile2 = LoadTexture("src/_resources/textures/backTile2.png");
-    // Texture2D backTile3 = LoadTexture("src/_resources/textures/backTile3.png");
-    // Texture2D backTile4 = LoadTexture("src/_resources/textures/backTile4.png");
-    // Texture2D backTile5 = LoadTexture("src/_resources/textures/backTile5.png");
-    // Texture2D backTile6 = LoadTexture("src/_resources/textures/backTile6.png");
-    // Texture2D backTile7 = LoadTexture("src/_resources/textures/backTile7.png");
-    // Texture2D backTile8 = LoadTexture("src/_resources/textures/backTile8.png");
-    // Texture2D backTile9 = LoadTexture("src/_resources/textures/backTile9.png");
-    // Texture2D floor32 = LoadTexture("src/_resources/textures/32x32_floor.png");
-    // Texture2D nullWpn = LoadTexture("src/_resources/textures/null_weapon_icon.png");
-    // Texture2D defaultWpn = LoadTexture("src/_resources/textures/default_weapon_icon.png");
-    // Texture2D flameWpn = LoadTexture("src/_resources/textures/flamethrower_weapon_icon.png");
-    // Texture2D laserWpn = LoadTexture("src/_resources/textures/laser_weapon_icon.png");
-    // Texture2D spaceWpn = LoadTexture("src/_resources/textures/spaceshot_weapon_icon.png");
 
-    // THEN CALL DrawTexture(backtile1, 0(posX), 0(posY), WHITE(tint));
 
     // MAP VARIABLES
     int mapWidth = 64;
@@ -112,6 +94,8 @@ int main()
 
     // BLOCKS ** Height and width will always be 32 pixels **
     std::vector<EnvItem> envItems;
+
+    Textures t = Textures();
 
     for (float y = 0; y < mapHeight; ++y)
     {
@@ -262,17 +246,20 @@ int main()
 
                 BeginMode2D(worldSpaceCamera);
                     for (int x = 0; x < mapWidth; ++x){
-                        for (int i = 0; i < mapHeight; ++i) DrawTexture(backTile9, x*16, i*16, WHITE);
+                        for (int i = 0; i < mapHeight; ++i) DrawTexture(t.backTile9, x*16, i*16, WHITE);
                     }
 
-                    for (int i = 0; i < envItemsLength; i++) DrawTextureRec(floor32, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, WHITE);
-
-                    for (int i = 0; i < sniperLength; ++i) snipers[i].DrawSniper(palette[2], *p);
+                    for (int i = 0; i < envItemsLength; i++) 
+                    {
+                        DrawTextureRec(t.floor16, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, WHITE);
+                    }
+                    for (int i = 0; i < sniperLength; ++i) snipers[i].DrawSniper(t.sniper, *p);
 
                     for (int i = 0; i < crustyLength; ++i) crusties[i].Draw(palette[2], *p);
-                    player.Draw();
                     
-                    DrawRectanglePro(player.sprite, origin, rotation, palette[1]);
+                    // SPRITE 
+                    player.Draw();
+                    DrawTextureRec(t.idle, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
 
                     // UI
                     DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);
@@ -280,23 +267,23 @@ int main()
                     switch (player.currentWeapon)
                     {
                     case Weapon::PISTOL:
-                        DrawTexture(defaultWpn, player.playerX + 72, 34, WHITE);
+                        DrawTexture(t.defaultWpn, player.playerX + 72, 34, WHITE);
                         break;
                     
                     case Weapon::FLAMETHROWER:
-                        DrawTexture(flameWpn, player.playerX + 72, 34, WHITE);
+                        DrawTexture(t.flameWpn, player.playerX + 72, 34, WHITE);
                         break;
 
                     case Weapon::LASER:
-                        DrawTexture(laserWpn, player.playerX + 72, 34, WHITE);
+                        DrawTexture(t.laserWpn, player.playerX + 72, 34, WHITE);
                         break;
 
                     case Weapon::SPACE:
-                        DrawTexture(spaceWpn, player.playerX + 72, 34, WHITE);
+                        DrawTexture(t.spaceWpn, player.playerX + 72, 34, WHITE);
                         break;
 
                     default:
-                        DrawTexture(nullWpn, player.playerX + 72, 34, WHITE);
+                        DrawTexture(t.nullWpn, player.playerX + 72, 34, WHITE);
                         break;
                     }
                     
@@ -325,17 +312,37 @@ int main()
         case GameScreen::PAUSE:
         {
             if(IsKeyPressed(KEY_ENTER)) currentScreen = GameScreen::GAMEPLAY;
-            BeginDrawing();
-                ClearBackground(palette[0]);
 
-                BeginMode2D(screenSpaceCamera);
-                    DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, palette[0]);
+            cameraX = 60.0f;
+            cameraY = 60.0f;
+
+            // Set the camera's target to the values computed above
+            screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
+
+            // Round worldSpace coordinates, keep decimals into screenSpace coordinates
+            worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
+            screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
+            screenSpaceCamera.target.x *= virtualRatio;
+
+            worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
+            screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
+            screenSpaceCamera.target.y *= virtualRatio;
+
+            BeginTextureMode(target);
+
+                BeginMode2D(worldSpaceCamera);
+
+                    // CENTER UI
+                    // DrawRectangle(20, 90, 120, 20, palette[1]);
+                    // DrawText("PAUSED", 120, 90, 12, palette[3]);
+
                 EndMode2D();
-                
-                // UI
-                DrawFPS(GetScreenWidth() - 95, 10);
-                DrawText("PAUSED", GetScreenWidth() / 2 - 20, GetScreenHeight() / 2, 12, palette[3]);
-            
+            EndTextureMode();
+
+            BeginDrawing();
+                BeginMode2D(screenSpaceCamera);
+                    DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+                EndMode2D();
             EndDrawing();
         }
         break;

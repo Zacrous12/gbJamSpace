@@ -29,41 +29,53 @@ public:
     void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range);
 
     // POSITION
-    float playerX = 10.0f;
-    float playerY = 140.0f;
-    float spriteWidth = 20.0f;
-    Rectangle sprite = { playerX, playerY, spriteWidth, spriteWidth};
-    bool facingRight = true;
-    bool hitObstacle = false;
-    Vector2 position = { playerX, playerY };
+    float playerX;
+    float playerY;
+    float spriteWidth;
+    float spriteHeight;
+    Rectangle sprite;
+    bool facingRight;
+    bool hitObstacle;
+    Vector2 position; 
+    float flipWidth;
 
     // MOVEMENT
-    float jumpHeight = 20.0f;
-    float speed = 2.0f;
-    float gravity = 0.5f;
-    int jumpTimer = 0;
-    bool groundPound = false;
-    bool canJump = true;
-    bool isDucking = false;
-    bool canMoveRight = true;
-    bool canMoveLeft = true;
-    bool wallJump = false;
-    float height = 20.0f;
-    int sprintTimeDefault = 20;
-    int sprintTimerLeft = 0;
-    int sprintTimerRight = 0;
-    bool isSprinting = false;
-    int doubleTapRight = 0;
-    int doubleTapLeft = 0;
+    float jumpHeight ;
+    float speed ;
+    float gravity ;
+    int jumpTimer ;
+    bool groundPound;
+    bool canJump ;
+    bool isDucking;
+    bool canMoveRight;
+    bool canMoveLeft ;
+    bool wallJump ;
+    float height ;
+    int sprintTimeDefault;
+    int sprintTimerLeft ;
+    int sprintTimerRight;
+    bool isSprinting ;
+    int doubleTapRight;
+    int doubleTapLeft ;
 
     // INVENTORY
-    int currentHealth = 100;
-    int maxHealth = 100;
-    int currentSpecial = 0;
-    int maxSpecial = 100;
-    Weapon currentWeapon = PISTOL;
-    int boosts = 0;
+    int currentHealth ;
+    int maxHealth ;
+    int currentSpecial;
+    int maxSpecial ;
+    Weapon currentWeapon;
+    int boosts ;
     Bullet bullets[100];
-    int shotCounter = 0;
+    int shotCounter;
+
+    // ANIMATION
+    Vector2 spritePos;
+    int walkSpeed;
+    int sprintSpeed;
+    int jumpSpeed;
+    int poundCounter;
+    int walkCounter;
+    int jumpCounter;
+    int sprintCounter;
 
 };
