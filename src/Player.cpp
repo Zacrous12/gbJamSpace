@@ -102,12 +102,12 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
             break; // No need to check further if collision is detected
             }
         }
-        spritePos.y = 50.0f;
+        spritePos.y = 48.0f;
 
         if(walkCounter > 8) 
         {
-            if(spritePos.x >= 250.0f) spritePos.x = -50.0f;
-            spritePos.x += 50.0f;
+            if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
+            spritePos.x += 48.0f;
             walkCounter = 0;
         }
         walkCounter++;
@@ -141,12 +141,12 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         }
 
         // Animations
-        spritePos.y = 50.0f;
+        spritePos.y = 48.0f;
 
         if(walkCounter > 8) 
         {
-            if(spritePos.x >= 250.0f) spritePos.x = -50.0f;
-            spritePos.x += 50.0f;
+            if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
+            spritePos.x += 48.0f;
             walkCounter = 0;
         }
         walkCounter++;
@@ -158,7 +158,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
     }
 
     if(isSprinting){
-        spritePos.y = 150.0f;
+        spritePos.y = 144.0f;
     }
     
 
@@ -205,17 +205,17 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
 
     if (IsKeyPressed(KEY_SPACE) && jumpTimer < 10 && jumpTimer > 0 && canMoveLeft && canMoveRight){
         jumpTimer = 20;
-        spritePos.x = 50.0f;
+        spritePos.x = 48.0f;
         groundPound = true;
     }
 
     if(jumpTimer){
-        spritePos.y = 100.0f;
+        spritePos.y = 96.0f;
     }
     
     if (groundPound)
     {
-        spritePos.x = 50.0f;
+        spritePos.x = 48.0f;
         spritePos.y = 0.0f;
         poundCounter = 10;
     }
@@ -296,6 +296,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
             hitObstacle = 1;
             speed = 0.0f;
             playerY = ei.rect.y - sprite.height;
+            if(!walkCounter) spritePos.y = 0.0f;
         }
     }
 
