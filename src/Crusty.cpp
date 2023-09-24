@@ -61,7 +61,7 @@ void Crusty::Draw(Color c, Player player){
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        if(!hasShell)health -= player.bullets[k].dmg;
+                                        if(!hasShell)health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
                                     }
         }
