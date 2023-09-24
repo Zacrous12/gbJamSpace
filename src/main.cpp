@@ -8,7 +8,6 @@
 #include "Crusty.h"
 #include "Textures.h"
 #include "Boss.h"
-#include <iostream>
 
 const int screenWidth = 640;
 const int screenHeight = 576;
@@ -283,8 +282,7 @@ int main()
                     // UI
                     DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);
                     DrawRectangle(player.playerX - 60, 36, (float)player.currentHealth / (float)player.maxHealth * 20.0f, 2, palette[3]);
-                   
-
+                    
                     switch (player.currentWeapon)
                     {
                     case Weapon::PISTOL:

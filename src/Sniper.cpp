@@ -8,9 +8,9 @@
 
 
 Sniper::Sniper(Vector2 pos,float blindR,float sightR){
-    dmg=1.0f;
-    shootSpeed=1;
-    health=50;
+    dmg=10.0f;
+    shootSpeed=1.5f;
+    health=15;
     position=pos;
     bulletSpeed=70;
     shouldFire = false;
