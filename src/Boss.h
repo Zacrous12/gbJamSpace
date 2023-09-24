@@ -26,6 +26,7 @@ class Boss {
     float rollDistance=200;
     float travelDis=0;
     bool isRolling=false;
+    bool shouldRoll=true;
 
     float currentSpeed=0;
     float spriteWidth=32;
@@ -35,6 +36,7 @@ class Boss {
     float decTime;
     float decTimer=7;
     bool bossFight=false;
+    Rectangle hitBox;
     Vector2 position;
 
 

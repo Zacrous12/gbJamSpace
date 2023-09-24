@@ -13,6 +13,11 @@ void Boss::Update(Player player){
     slamRange.y=position.y;
     slamRange.height=spriteWidth;
     slamRange.width=60+spriteWidth;
+
+    hitBox.x=position.x;
+    hitBox.y=position.y;
+    hitBox.height=spriteWidth;
+    hitBox.width=spriteWidth;
     
     
     if(player.position.x>=600)bossFight=true;
@@ -46,7 +51,7 @@ void Boss::Update(Player player){
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        health -= player.bullets[k].damage;
+                                        if(!isRolling)health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
                                     }
         }
@@ -63,9 +68,10 @@ void Boss::Bullets(Player player){
         if (targetPos.x > position.x )flipX = 1;
         else if (targetPos.x < position.x)  {
             flipX = -1;
-            trig.x-=10;
-            trig.y-=8;
+            
         }
+        trig.x-=10;
+        trig.y-=14;
         
         bulletPos = {position.x+spriteWidth/2,position.y+spriteWidth/2};
         bullet2Pos={position.x+spriteWidth/2,position.y+spriteWidth/2};
@@ -77,6 +83,7 @@ void Boss::Bullets(Player player){
 
 void Boss::Roll(Player player){
     isRolling=true;
+    
     if(player.position.x+player.spriteWidth<position.x){
         currentSpeed=-rollSpeed;
     }else if(player.position.x>position.x+spriteWidth){
@@ -136,10 +143,12 @@ void Boss::Draw(Player player,Color c){
 
         //rolling
         if(isRolling){
-            if(travelDis<rollDistance){
+            if(CheckCollisionRecs(player.sprite,hitBox)  && player.groundPound)shouldRoll=false;
+            else shouldRoll=true;
+            if(travelDis<rollDistance && shouldRoll){
                 position.x+=currentSpeed*GetFrameTime();
                 travelDis+=rollSpeed*GetFrameTime();
-            }else if(travelDis>=rollDistance){
+            }else if(travelDis>=rollDistance || !shouldRoll){
                 currentSpeed=0;
                 isRolling=false;
                 isAttacking=false;

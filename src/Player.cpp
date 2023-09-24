@@ -41,12 +41,12 @@ Player::Player(float x, float y)
     currentWeapon = PISTOL;
     boosts = 0;
     shotCounter = 0;
-
-
 }
 
 void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength)
 {
+    if(currentHealth <= 0) PlaySound(death);
+
     if(IsKeyPressed(KEY_D)) {
         facingRight = true;
         if(sprintTimerRight > 0) {
@@ -184,8 +184,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         if(!canMoveLeft || !canMoveRight){
             jumpTimer = 3;
             wallJump = true;
-        }
-
+        } 
     } else if(!canJump && jumpTimer < 2 && playerY < 140.0f) 
     {
         playerY += 3.0f * gravity;
@@ -274,12 +273,16 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         //(bool isRight, float speed, Vector2 pos, Color col, float rad, float range, int damage)
         if(currentWeapon == PISTOL){
             Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 2.5f, 7.0f, 4.5);
+            PlaySound(shoot);
         }else if(currentWeapon == LASER){
             Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 1.5f, 13.0f, 3.0f);
+            PlaySound(laser);
         }else if(currentWeapon == FLAMETHROWER){
             Shoot(facingRight, 7.0f, position, GetColor(0x8be5ffff), 4.0f, 4.0f, 7);
+            PlaySound(flame);
         }else if(currentWeapon == SPACE){
             Shoot(facingRight, 4.0f, position, GetColor(0x622e4cff), 3.0f, 40.0f, 1);
+            PlaySound(space);
         }
     }
     
@@ -338,4 +341,15 @@ void Player::Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad,
     bullets[shotCounter] = {isRight, speed, pos, col, rad, range, damage};
     shotCounter++;
     if(shotCounter > 9) shotCounter = 0;
+}
+
+void Player::LoadSounds()
+{
+    this->ouch = LoadSound("src/_resources/sounds/hurt.wav");
+    this->death = LoadSound("src/_resources/sounds/death.wav");
+    this->win = LoadSound("src/_resources/sounds/win.wav");
+    this->shoot = LoadSound("src/_resources/sounds/shoot.wav");
+    this->laser = LoadSound("src/_resources/sounds/laser.wav");
+    this->flame = LoadSound("src/_resources/sounds/flame.wav");
+    this->space = LoadSound("src/_resources/sounds/space.wav");
 }
