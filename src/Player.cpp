@@ -34,21 +34,14 @@ Player::Player(float x, float y)
     doubleTapRight = 0;
     doubleTapLeft = 0;
 
-    currentHealth = 100;
-    maxHealth = 100;
+    currentHealth = 10;
+    maxHealth = 10;
     currentSpecial = 0;
     maxSpecial = 100;
     currentWeapon = PISTOL;
     boosts = 0;
     shotCounter = 0;
 
-    int walkSpeed = 10;
-    int sprintSpeed = 10;
-    int jumpSpeed = 10;
-    int poundCounter = 0;
-    int walkCounter = 0;
-    int sprintCounter = 0;
-    int jumpCounter = 0;
 
 }
 
@@ -106,7 +99,8 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
 
         if(walkCounter > 8) 
         {
-            if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
+            if(!hitObstacle && spritePos.x >= 140.0f) spritePos.x = 0.0f;
+            else if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
             spritePos.x += 48.0f;
             walkCounter = 0;
         }
@@ -145,7 +139,8 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
 
         if(walkCounter > 8) 
         {
-            if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
+            if(!hitObstacle && spritePos.x >= 140.0f) spritePos.x = 0.0f;
+            else if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
             spritePos.x += 48.0f;
             walkCounter = 0;
         }
@@ -164,10 +159,14 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
 
     if(IsKeyReleased(KEY_D)){
         isSprinting = false;
+        spritePos.y = 0.0f;
+        spritePos.x = 0.0f;
         walkCounter = 0, sprintCounter = 0;
     } 
     if (IsKeyReleased(KEY_A)) {
         isSprinting = false;
+        spritePos.y = 0.0f;
+        spritePos.x = 0.0f;
         walkCounter = 0, sprintCounter = 0;
     }
 
@@ -196,7 +195,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
     if(IsKeyPressed(KEY_SPACE) && wallJump)
     {
         jumpTimer = 8;
-        playerY -= 4.0f * gravity;
+        playerY -= 12.0f * gravity;
         gravity += 0.1f;
         wallJump = false;
         if(IsKeyDown(KEY_A)) playerX += 2.0f * gravity;
@@ -245,7 +244,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         if (playerY >= 140.0f) 
         {
             playerY = 140.0f; // Snap player to ground
-            gravity = 0.0f; 
+            gravity = 1.0f; 
             canJump = true; 
             spritePos.y = 0.0f;
         }
@@ -326,7 +325,6 @@ void Player::Draw()
             bullets[i].range -= 0.6f;
         } 
     }
-    
 }
 
 void Player::Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range)
@@ -334,7 +332,7 @@ void Player::Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad,
     if(isRight) pos = {pos.x + 20.0f, pos.y};
     else speed = -speed;
 
-    pos.y -= 19.0f;
+    pos.y -= 14.0f;
 
     bullets[shotCounter] = {isRight, speed, pos, col, rad, range};
     shotCounter++;
