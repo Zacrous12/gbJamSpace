@@ -34,7 +34,7 @@ Player::Player(float x, float y)
     doubleTapRight = 0;
     doubleTapLeft = 0;
 
-    currentHealth = 0;
+    currentHealth = 10;
     maxHealth = 100;
     currentSpecial = 0;
     maxSpecial = 100;

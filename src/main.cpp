@@ -268,7 +268,7 @@ int main()
                     
                     // SPRITE 
                     player.Draw();
-                    DrawTextureRec((player.currentHealth) ? t.idle : t.death, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
+                    DrawTextureRec((player.currentHealth > 0) ? t.idle : t.death, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
                     if(boss.health > 0) boss.Draw(player,palette[1]);
 
                     // UI
