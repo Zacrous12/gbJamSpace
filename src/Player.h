@@ -16,6 +16,7 @@ typedef struct Bullet {
     Color color;
     float radius;
     float range;
+    int damage;
 } Bullet;
 
 enum Weapon { PISTOL, LASER, FLAMETHROWER, SPACE };
@@ -26,7 +27,7 @@ public:
     Player(float x, float y);
     void Draw();
     void Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength);
-    void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range);
+    void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range, int damage);
 
     // POSITION
     float playerX;

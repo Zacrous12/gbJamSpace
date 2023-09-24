@@ -127,7 +127,7 @@ void Sniper::UpdateSniper(Player player){
                                     {sniperRec.x,sniperRec.y}, 7.5f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        health -= 1;
+                                        health -= player.bullets[k].dmg;
                                         player.bullets[k].range = 0;
                                     }
         }

@@ -46,7 +46,7 @@ void Boss::Update(Player player){
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        health -= 1;
+                                        health -= player.bullets[k].dmg;
                                         player.bullets[k].range = 0;
                                     }
         }

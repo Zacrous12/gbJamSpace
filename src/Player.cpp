@@ -272,13 +272,13 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
     if (IsKeyPressed(KEY_J))
     {
         if(currentWeapon == PISTOL){
-            Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 1.0f, 10.0f);
+            Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 1.0f, 10.0f, 1);
         }else if(currentWeapon == LASER){
-            Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 2.0f, 25.0f);
+            Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 2.0f, 25.0f, 1);
         }else if(currentWeapon == FLAMETHROWER){
-            Shoot(facingRight, 2.0f, position, GetColor(0x8be5ffff), 4.0f, 5.0f);
+            Shoot(facingRight, 2.0f, position, GetColor(0x8be5ffff), 4.0f, 5.0f, 1);
         }else if(currentWeapon == SPACE){
-            Shoot(facingRight, 4.0f, position, GetColor(0x622e4cff), 3.0f, 40.0f);
+            Shoot(facingRight, 4.0f, position, GetColor(0x622e4cff), 3.0f, 40.0f, 1);
         }
     }
     
@@ -327,14 +327,14 @@ void Player::Draw()
     }
 }
 
-void Player::Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range)
+void Player::Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range, int damage)
 {
     if(isRight) pos = {pos.x + 20.0f, pos.y};
     else speed = -speed;
 
     pos.y -= 14.0f;
 
-    bullets[shotCounter] = {isRight, speed, pos, col, rad, range};
+    bullets[shotCounter] = {isRight, speed, pos, col, rad, range, damage};
     shotCounter++;
     if(shotCounter > 9) shotCounter = 0;
 }
