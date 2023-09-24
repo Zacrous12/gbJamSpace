@@ -130,8 +130,9 @@ void Sniper::UpdateSniper(Player player){
                                     {sniperRec.x,sniperRec.y}, 16.f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        health -= player.bullets[k].damage;
+                                        this->health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
+                                        player.bullets[k].damage = 0;
                                         printf("sniper health: %f\n", health);
                                     }
         }
