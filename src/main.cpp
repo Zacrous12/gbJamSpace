@@ -7,6 +7,8 @@
 #include "Sniper.h"
 #include "Crusty.h"
 #include "Textures.h"
+#include "Boss.h"
+#include <iostream>
 
 const int screenWidth = 640;
 const int screenHeight = 576;
@@ -67,7 +69,9 @@ int main()
     // SetWindowIcon(icon);
     // UnloadImage(icon);
 
-    Player player = Player(0.0f,0.0f);
+    Player player = Player(900.0f,0.0f);
+    Boss boss = Boss({950,115});
+    
     std::vector<Sniper> snipers;
     std::vector<Crusty> crusties;
 
@@ -89,7 +93,7 @@ int main()
         1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     };
 
     // BLOCKS ** Height and width will always be 32 pixels **
@@ -259,11 +263,14 @@ int main()
                     
                     // SPRITE 
                     player.Draw();
+                    boss.Draw(player,palette[1]);
                     DrawTextureRec(t.idle, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
 
                     // UI
                     DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);
                     DrawRectangle(player.playerX - 60, 36, (float)player.currentHealth/ (float)player.maxHealth * 20.0f, 2, palette[3]);
+                   
+
                     switch (player.currentWeapon)
                     {
                     case Weapon::PISTOL:
