@@ -27,8 +27,8 @@ Sniper::Sniper(Vector2 pos,float blindR,float sightR){
     blinkCounter=8;
     blinking=false;
     
-    blink = LoadSound("res/sounds/blink.wav");    
-    sniperDeath = LoadSound("res/sounds/sniperDeath.wav");
+    blink = LoadSound("src/_resources/sounds/blink.wav");    
+    sniperDeath = LoadSound("src/_resources/sounds/sniperDeath.wav");
 
 }
 

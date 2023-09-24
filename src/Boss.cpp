@@ -1,14 +1,17 @@
 #include "raylib.h"
 #include "Boss.h"
 #include "Player.h"
+#include "Textures.h"
 
 Boss::Boss(Vector2 pos){
     position=pos;
+    spritePos={0.0f, 0.0f};
+    boss = LoadTexture("src/_resources/sprites/BOSS.png"); 
     
-    bossHurt = LoadSound("res/sounds/bossHurt.wav");
-    bossDeath = LoadSound("res/sounds/bossDeath.wav");
-    bossHit = LoadSound("res/sounds/bossHit.wav");
-    bossRoll = LoadSound("res/sounds/bossRoll.wav");
+    bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
+    bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
+    bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
+    bossRoll = LoadSound("src/_resources/sounds/bossRoll.wav");
 }
 
 void Boss::Update(Player player){
@@ -55,9 +58,9 @@ void Boss::Update(Player player){
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        if(!isRolling)health -= player.bullets[k].damage;
+                                        //if(!isRolling)health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
-                                        PlaySound(bossHurt);
+                                        //PlaySound(bossHurt);
                                     }
         }
     
@@ -88,7 +91,7 @@ void Boss::Bullets(Player player){
 
 void Boss::Roll(Player player){
     isRolling=true;
-    PlaySound(bossRoll);
+    //PlaySound(bossRoll);
     
     if(player.position.x+player.spriteWidth<position.x){
         currentSpeed=-rollSpeed;
@@ -107,7 +110,7 @@ void Boss::Slam(Player &player){
 
 void Boss::Draw(Player player,Color c){
     if(health>0){
-        DrawRectangleV(position,{spriteWidth,spriteWidth},c);
+        DrawTexturePro(boss, {spritePos.x,spritePos.y,spriteWidth,spriteWidth}, {position.x,position.y,spriteWidth,spriteWidth}, {0,0}, 0, WHITE);
         
         Update(player);
         if (shouldFire && isAttacking){

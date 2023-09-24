@@ -5,8 +5,8 @@ Crusty::Crusty(Vector2 pos){
     position=pos;
     health = 150.0f;
     
-    crusty = LoadSound("res/sounds/crusty.wav");
-    crustyDeath = LoadSound("res/sounds/crustyDeath.wav");
+    crusty = LoadSound("src/_resources/sounds/crusty.wav");
+    crustyDeath = LoadSound("src/_resources/sounds/crustyDeath.wav");
 }
 
 void Crusty::Update(Player player){
@@ -68,7 +68,6 @@ void Crusty::Draw(Color c, Player player){
                                         if(!hasShell) this->health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
                                         player.bullets[k].damage = 0;
-                                        printf("crusty health: %f\n", health);
                                     }
         }
 

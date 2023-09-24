@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib.h"
 #include "Player.h"
+#include "Textures.h"
 
 class Boss {
     public:
@@ -29,7 +30,7 @@ class Boss {
     bool shouldRoll=true;
 
     float currentSpeed=0;
-    float spriteWidth=32;
+    float spriteWidth=140;
     bool isAttacking=false;
     float health=50;
     int attack=0;
@@ -38,10 +39,12 @@ class Boss {
     bool bossFight=false;
     Rectangle hitBox;
     Vector2 position;
+    Rectangle spritePos;
 
     Sound bossHurt;
     Sound bossDeath;
     Sound bossRoll;
     Sound bossHit;
 
+    Texture2D boss;
 };

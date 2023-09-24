@@ -22,4 +22,6 @@ Textures::Textures(){
     grassyWall = LoadTexture("src/_resources/textures/16x32_grassy_wall.png");
     idle = LoadTexture("src/_resources/sprites/manSheet.png");
     sniper = LoadTexture("src/_resources/sprites/9axis-sniper_spritesheet.png"); 
+    boss = LoadTexture("src/_resources/sprites/BOSS.png");
+    death = LoadTexture("src/_resources/sprites/DED.png");
 }

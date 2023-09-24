@@ -56,17 +56,6 @@ int main()
     mainMenu.looping = true;
     Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
 
-    // Sound bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
-    // Sound bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
-    // Sound bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
-    // Sound bossRoll = LoadSound("src/_resources/sounds/bossRoll.wav");
-
-    // Sound blink = LoadSound("src/_resources/sounds/blink.wav");
-    // Sound sniperDeath = LoadSound("src/_resources/sounds/sniperDeath.wav");
-
-    // Sound crusty = LoadSound("src/_resources/sounds/crusty.wav");
-    // Sound crustyDeath = LoadSound("src/_resources/sounds/crustyDeath.wav");
-
     GameScreen currentScreen = GameScreen::TITLE;
 
     std::vector<int> myVector;
@@ -79,7 +68,7 @@ int main()
     // UnloadImage(icon);
 
     Player player = Player(900.0f,0.0f);
-    Boss boss = Boss({950,115});
+    Boss boss = Boss({950,15});
     player.LoadSounds();
     
     std::vector<Sniper> snipers;
@@ -98,12 +87,12 @@ int main()
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
     };
 
     // BLOCKS ** Height and width will always be 32 pixels **
@@ -244,7 +233,7 @@ int main()
 
             player.Update(deltaTime, envItemsPtr, envItemsLength);
 
-            if(player.currentHealth <= 0) currentScreen = GameScreen::TITLE;
+            //if(player.currentHealth <= 0) currentScreen = GameScreen::TITLE;
 
             cameraX = player.playerX - 70.0f;
             cameraY = 32.0f;
@@ -273,14 +262,14 @@ int main()
                     {
                         DrawTextureRec(t.floor16, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, WHITE);
                     }
-                    for (int i = 0; i < sniperLength; ++i) snipers[i].DrawSniper(t.sniper, *p);
+                    for (int i = 0; i < sniperLength; i++) if(snipers[i].health > 0) snipers[i].DrawSniper(t.sniper, *p);
 
-                    for (int i = 0; i < crustyLength; ++i) crusties[i].Draw(palette[2], *p);
+                    for (int i = 0; i < crustyLength; i++) if(crusties[i].health > 0) crusties[i].Draw(palette[2], *p);
                     
                     // SPRITE 
                     player.Draw();
-                    DrawTextureRec(t.idle, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
-                    boss.Draw(player,palette[1]);
+                    DrawTextureRec((player.currentHealth) ? t.idle : t.death, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
+                    if(boss.health > 0) boss.Draw(player,palette[1]);
 
                     // UI
                     DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);

@@ -34,7 +34,7 @@ Player::Player(float x, float y)
     doubleTapRight = 0;
     doubleTapLeft = 0;
 
-    currentHealth = 100;
+    currentHealth = 0;
     maxHealth = 100;
     currentSpecial = 0;
     maxSpecial = 100;
@@ -45,7 +45,7 @@ Player::Player(float x, float y)
 
 void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength)
 {
-    if(currentHealth <= 0) PlaySound(death);
+    //if(currentHealth <= 0) PlaySound(death);
 
     if(IsKeyPressed(KEY_D)) {
         facingRight = true;
@@ -170,6 +170,8 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         walkCounter = 0, sprintCounter = 0;
     }
 
+    if(IsKeyDown(KEY_D) && IsKeyDown(KEY_A) && IsKeyUp(KEY_SPACE)) spritePos.y = 0.0f, spritePos.x = 0.0f;
+
     // Ducking is bugged on platforms
     // if(IsKeyDown(KEY_S)) isDucking = true, height = 10.0f;
     // else isDucking = false, height = 0.0f;
@@ -246,14 +248,18 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
             gravity = 1.0f; 
             canJump = true; 
             spritePos.y = 0.0f;
+            canMoveLeft = true;
+            canMoveRight = true;
         }
     }
 
-    if (playerY >= 140.0f) 
+    if (playerY >= 140.0f)
     {
         playerY = 140.0f;
         canJump = true;
         wallJump = false;
+        canMoveLeft = true;
+        canMoveRight = true;
     }
 
     sprite = { playerX, playerY , spriteWidth, spriteHeight};
@@ -315,6 +321,12 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
     if (!facingRight) flipWidth = -sprite.width;
     else flipWidth = sprite.width;
 
+    if(currentHealth < 1)
+    {
+        maxHealth = 0;
+        spritePos.y = 0.0f;
+        if(maxHealth > 20) spritePos.x += 48.0f, maxHealth = 0;
+    }
 }
 
 void Player::Draw()
