@@ -56,14 +56,6 @@ int main()
     PlayMusicStream(mainMenu);
     mainMenu.looping = true;
     Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
-    Sound ouch = LoadSound("src/_resources/sounds/hurt.wav");
-    Sound jump = LoadSound("src/_resources/sounds/jump.wav");
-    Sound death = LoadSound("src/_resources/sounds/death.wav");
-    Sound win = LoadSound("src/_resources/sounds/win.wav");
-    Sound shoot = LoadSound("src/_resources/sounds/shoot.wav");
-    Sound laser = LoadSound("src/_resources/sounds/laser.wav");
-    Sound flame = LoadSound("src/_resources/sounds/flame.wav");
-    Sound space = LoadSound("src/_resources/sounds/space.wav");
     Sound bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
     Sound bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
     Sound bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
@@ -86,6 +78,7 @@ int main()
 
     Player player = Player(900.0f,0.0f);
     Boss boss = Boss({950,115});
+    player.LoadSounds();
     
     std::vector<Sniper> snipers;
     std::vector<Crusty> crusties;
@@ -209,6 +202,8 @@ int main()
             BeginTextureMode(target);
                 ClearBackground(palette[0]);
 
+                UpdateMusicStream(mainMenu);
+
                 BeginMode2D(worldSpaceCamera);
 
                     if(backTimer > 70) DrawRectangle(0, 0, virtualScreenWidth, 20, palette[3]), DrawRectangle(0, 20, virtualScreenWidth, 20, palette[2]);
@@ -243,7 +238,11 @@ int main()
                 
             float deltaTime = GetFrameTime();
 
+            UpdateMusicStream(gameplay);
+
             player.Update(deltaTime, envItemsPtr, envItemsLength);
+
+            if(player.currentHealth <= 0) currentScreen = GameScreen::TITLE;
 
             cameraX = player.playerX - 70.0f;
             cameraY = 32.0f;

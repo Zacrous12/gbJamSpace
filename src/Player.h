@@ -28,6 +28,7 @@ public:
     void Draw();
     void Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength);
     void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range, int damage);
+    void LoadSounds();
 
     // POSITION
     float playerX;
@@ -78,5 +79,15 @@ public:
     int walkCounter;
     int jumpCounter;
     int sprintCounter;
+
+    // SOUNDS
+    Sound ouch;
+    Sound jump;
+    Sound death;
+    Sound win;
+    Sound shoot;
+    Sound laser;
+    Sound flame;
+    Sound space;
 
 };
