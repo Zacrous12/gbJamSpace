@@ -123,8 +123,9 @@ void Sniper::UpdateSniper(Player player){
         // Collision Check
         for (int k = 0; k < bulletCount; k++)
         {
-            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 1.5f, 
-                                    {sniperRec.x,sniperRec.y}, 7.5f))
+            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 
+                                    player.bullets[k].radius, 
+                                    {sniperRec.x,sniperRec.y}, 16.f))
                                     {
                                         player.bullets[k].position = {0,0};
                                         health -= player.bullets[k].damage;

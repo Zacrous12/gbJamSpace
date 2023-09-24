@@ -34,8 +34,8 @@ Player::Player(float x, float y)
     doubleTapRight = 0;
     doubleTapLeft = 0;
 
-    currentHealth = 10;
-    maxHealth = 10;
+    currentHealth = 100;
+    maxHealth = 100;
     currentSpecial = 0;
     maxSpecial = 100;
     currentWeapon = PISTOL;

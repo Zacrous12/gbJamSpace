@@ -57,7 +57,8 @@ void Crusty::Draw(Color c, Player player){
     // Collision Check
     for (int k = 0; k < bulletCount; k++)
         {
-            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 1.5f, 
+            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 
+                                    player.bullets[k].radius, 
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
