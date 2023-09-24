@@ -277,9 +277,9 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         }else if(currentWeapon == LASER){
             Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 2.0f, 25.0f);
         }else if(currentWeapon == FLAMETHROWER){
-            Shoot(facingRight, 2.0f, position, GetColor(0x8be5ffff), 4.0f, 5.0f);
+            Shoot(facingRight, 2.0f, position, GetColor(0x8be5ffff), 4.0f, 7.5f);
         }else if(currentWeapon == SPACE){
-            Shoot(facingRight, 4.0f, position, GetColor(0x622e4cff), 3.0f, 40.0f);
+            Shoot(facingRight, 6.0f, position, GetColor(0x622e4cff), 3.0f, 40.0f);
         }
     }
     

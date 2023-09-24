@@ -3,7 +3,7 @@
 
 Crusty::Crusty(Vector2 pos){
     position=pos;
-    health=100;
+    health = 15.0f;
     
 }
 
