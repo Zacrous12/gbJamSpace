@@ -17,8 +17,8 @@ class Boss {
     float ratio;
     float bulletSpeed=15;
     int flipX;
-    bool shouldFire=false;;
-    void Slam(Player);
+    bool shouldFire=false;
+    void Slam(Player &player);
     Rectangle slamRange;
     float slamDmg=30;
     void Roll(Player);

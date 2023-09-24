@@ -87,9 +87,8 @@ void Boss::Roll(Player player){
 
 }
 
-void Boss::Slam(Player player){
-    //play animation
-    //dmg player
+void Boss::Slam(Player &player){
+    player.currentHealth -= slamDmg;
 }
 
 void Boss::Draw(Player player,Color c){
