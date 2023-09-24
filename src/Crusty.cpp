@@ -5,6 +5,8 @@ Crusty::Crusty(Vector2 pos){
     position=pos;
     health = 15.0f;
     
+    crusty = LoadSound("res/sounds/crusty.wav");
+    crustyDeath = LoadSound("res/sounds/crustyDeath.wav");
 }
 
 void Crusty::Update(Player player){
@@ -30,6 +32,7 @@ void Crusty::Update(Player player){
 
 
     if (isCharging) {
+        PlaySound(crusty);
         chargeTimer += 10*GetFrameTime();
         if(chargeTimer>=chargeTime){
             isCharging = false;
@@ -62,13 +65,15 @@ void Crusty::Draw(Color c, Player player){
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        if(!hasShell)health -= player.bullets[k].damage;
+                                        if(!hasShell) this->health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
+                                        printf("crusty health: %f\n", health);
                                     }
         }
 
         if(health <= 0){
             //killCrusty()
+            PlaySound(crustyDeath);
         }
     
 }

@@ -27,7 +27,8 @@ Sniper::Sniper(Vector2 pos,float blindR,float sightR){
     blinkCounter=8;
     blinking=false;
     
-    
+    blink = LoadSound("res/sounds/blink.wav");    
+    sniperDeath = LoadSound("res/sounds/sniperDeath.wav");
 
 }
 
@@ -84,6 +85,7 @@ void Sniper::DrawSniper(Texture2D t,Player &player){
 
 //draw Bullet---------------------------------    
     if (shouldFire){
+        PlaySound(blink);
         
         if (flipX==1){
             if (bulletPos.x < targetPos.x ){
@@ -130,11 +132,13 @@ void Sniper::UpdateSniper(Player player){
                                         player.bullets[k].position = {0,0};
                                         health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
+                                        printf("sniper health: %f\n", health);
                                     }
         }
 
         if(health <= 0){
             //killSniper()
+            PlaySound(sniperDeath);
         }
     
         if (shootTimer < shootDelay) shootTimer+=5*GetFrameTime();

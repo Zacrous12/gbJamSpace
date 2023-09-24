@@ -35,6 +35,8 @@ class Sniper{
     void CalcShoot(Player player);
     void UpdateSniper(Player player);
     void DrawSniper(Texture2D t,Player &player);
+    Sound blink;
+    Sound sniperDeath;
     
 
 };

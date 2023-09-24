@@ -39,5 +39,9 @@ class Boss {
     Rectangle hitBox;
     Vector2 position;
 
+    Sound bossHurt;
+    Sound bossDeath;
+    Sound bossRoll;
+    Sound bossHit;
 
 };

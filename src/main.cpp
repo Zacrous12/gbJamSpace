@@ -55,14 +55,17 @@ int main()
     PlayMusicStream(mainMenu);
     mainMenu.looping = true;
     Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
-    Sound bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
-    Sound bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
-    Sound bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
-    Sound bossRoll = LoadSound("src/_resources/sounds/bossRoll.wav");
-    Sound blink = LoadSound("src/_resources/sounds/blink.wav");
-    Sound sniperDeath = LoadSound("src/_resources/sounds/sniperDeath.wav");
-    Sound crusty = LoadSound("src/_resources/sounds/crusty.wav");
-    Sound crustyDeath = LoadSound("src/_resources/sounds/crustyDeath.wav");
+
+    // Sound bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
+    // Sound bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
+    // Sound bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
+    // Sound bossRoll = LoadSound("src/_resources/sounds/bossRoll.wav");
+
+    // Sound blink = LoadSound("src/_resources/sounds/blink.wav");
+    // Sound sniperDeath = LoadSound("src/_resources/sounds/sniperDeath.wav");
+
+    // Sound crusty = LoadSound("src/_resources/sounds/crusty.wav");
+    // Sound crustyDeath = LoadSound("src/_resources/sounds/crustyDeath.wav");
 
     GameScreen currentScreen = GameScreen::TITLE;
 

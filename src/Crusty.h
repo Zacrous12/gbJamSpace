@@ -23,4 +23,7 @@ class Crusty {
     void Update(Player player);
     void Draw(Color c,Player player);
     void Damage(Player &player);
+
+    Sound crusty;
+    Sound crustyDeath;
 };

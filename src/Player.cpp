@@ -271,7 +271,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
     if (IsKeyPressed(KEY_J))
     {
         if(currentWeapon == PISTOL){
-            Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 1.0f, 10.0f, 1);
+            Shoot(facingRight, 3.5f, position, GetColor(0x8be5ffff), 2.0f, 10.0f, 1);
             PlaySound(shoot);
         }else if(currentWeapon == LASER){
             Shoot(facingRight, 5.0f, position, GetColor(0x8be5ffff), 2.0f, 25.0f, 1);

@@ -5,7 +5,10 @@
 Boss::Boss(Vector2 pos){
     position=pos;
     
-    
+    bossHurt = LoadSound("res/sounds/bossHurt.wav");
+    bossDeath = LoadSound("res/sounds/bossDeath.wav");
+    bossHit = LoadSound("res/sounds/bossHit.wav");
+    bossRoll = LoadSound("res/sounds/bossRoll.wav");
 }
 
 void Boss::Update(Player player){
@@ -47,12 +50,14 @@ void Boss::Update(Player player){
 
     for (int k = 0; k < bulletCount; k++)
         {
-            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 1.5f, 
+            if(CheckCollisionCircles({player.bullets[k].position.x,player.bullets[k].position.y}, 
+                                    player.bullets[k].radius, 
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
                                         if(!isRolling)health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
+                                        PlaySound(bossHurt);
                                     }
         }
     
@@ -83,6 +88,7 @@ void Boss::Bullets(Player player){
 
 void Boss::Roll(Player player){
     isRolling=true;
+    PlaySound(bossRoll);
     
     if(player.position.x+player.spriteWidth<position.x){
         currentSpeed=-rollSpeed;
@@ -96,6 +102,7 @@ void Boss::Roll(Player player){
 
 void Boss::Slam(Player &player){
     player.currentHealth -= slamDmg;
+    PlaySound(bossHit);
 }
 
 void Boss::Draw(Player player,Color c){
@@ -155,5 +162,8 @@ void Boss::Draw(Player player,Color c){
                 travelDis=0;
             }
         }
+    } else {
+        PlaySound(bossDeath);
+        //KillBoss();
     }
 }
