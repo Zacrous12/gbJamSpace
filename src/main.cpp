@@ -51,12 +51,27 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "Florida Man");
     InitAudioDevice();
-    Music mainMenu = LoadMusicStream("src/_resources/sounds/d1.mp3");
-    Music gameplay = LoadMusicStream("src/_resources/sounds/theLifeNeurotic.mp3");
+    Music mainMenu = LoadMusicStream("src/_resources/sounds/mainMenu.wav");
+    Music gameplay = LoadMusicStream("src/_resources/sounds/fast.wav");
     PlayMusicStream(mainMenu);
     mainMenu.looping = true;
     Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
     Sound ouch = LoadSound("src/_resources/sounds/hurt.wav");
+    Sound jump = LoadSound("src/_resources/sounds/jump.wav");
+    Sound death = LoadSound("src/_resources/sounds/death.wav");
+    Sound win = LoadSound("src/_resources/sounds/win.wav");
+    Sound shoot = LoadSound("src/_resources/sounds/shoot.wav");
+    Sound laser = LoadSound("src/_resources/sounds/laser.wav");
+    Sound flame = LoadSound("src/_resources/sounds/flame.wav");
+    Sound space = LoadSound("src/_resources/sounds/space.wav");
+    Sound bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
+    Sound bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
+    Sound bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
+    Sound bossRoll = LoadSound("src/_resources/sounds/bossRoll.wav");
+    Sound blink = LoadSound("src/_resources/sounds/blink.wav");
+    Sound sniperDeath = LoadSound("src/_resources/sounds/sniperDeath.wav");
+    Sound crusty = LoadSound("src/_resources/sounds/crusty.wav");
+    Sound crustyDeath = LoadSound("src/_resources/sounds/crustyDeath.wav");
 
     GameScreen currentScreen = GameScreen::TITLE;
 
@@ -88,8 +103,8 @@ int main()
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,3,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         1,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -268,7 +283,7 @@ int main()
 
                     // UI
                     DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);
-                    DrawRectangle(player.playerX - 60, 36, (float)player.currentHealth/ (float)player.maxHealth * 20.0f, 2, palette[3]);
+                    DrawRectangle(player.playerX - 60, 36, (float)player.currentHealth / (float)player.maxHealth * 20.0f, 2, palette[3]);
                    
 
                     switch (player.currentWeapon)

@@ -16,8 +16,10 @@ class Sniper{
     float ratio;
     bool shouldFire;
     bool isShooting;
+    bool blinking;
     int flipY;
     int flipX;
+    int blinkCounter;
     float bulletDistance;
     float spriteWidth;
     float blindRadius;

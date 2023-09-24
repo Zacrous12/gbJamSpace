@@ -16,6 +16,7 @@ typedef struct Bullet {
     Color color;
     float radius;
     float range;
+    int damage;
 } Bullet;
 
 enum Weapon { PISTOL, LASER, FLAMETHROWER, SPACE };
@@ -26,7 +27,7 @@ public:
     Player(float x, float y);
     void Draw();
     void Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength);
-    void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range);
+    void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range, int damage);
 
     // POSITION
     float playerX;
@@ -40,23 +41,23 @@ public:
     float flipWidth;
 
     // MOVEMENT
-    float jumpHeight ;
-    float speed ;
-    float gravity ;
-    int jumpTimer ;
+    float jumpHeight;
+    float speed;
+    float gravity;
+    int jumpTimer;
     bool groundPound;
-    bool canJump ;
+    bool canJump;
     bool isDucking;
     bool canMoveRight;
-    bool canMoveLeft ;
-    bool wallJump ;
-    float height ;
+    bool canMoveLeft;
+    bool wallJump;
+    float height;
     int sprintTimeDefault;
-    int sprintTimerLeft ;
+    int sprintTimerLeft;
     int sprintTimerRight;
-    bool isSprinting ;
+    bool isSprinting;
     int doubleTapRight;
-    int doubleTapLeft ;
+    int doubleTapLeft;
 
     // INVENTORY
     int currentHealth ;

@@ -24,6 +24,8 @@ Sniper::Sniper(Vector2 pos,float blindR,float sightR){
     isShooting = false;
     shootTimer=0;
     shootDelay=10;
+    blinkCounter=8;
+    blinking=false;
     
     
 
@@ -63,6 +65,18 @@ void Sniper::CalcShoot(Player player){
 
 void Sniper::DrawSniper(Texture2D t,Player &player){
     if(health >= 1) {
+        //ANIMATION
+        if(blinkCounter > 8) 
+        {
+            if(sniperRec.x >= 320.0f) blinking = true;
+            if(sniperRec.x <= 0.0f) blinking = false; 
+            if(blinking) sniperRec.x -= 32.0f;
+            else sniperRec.x += 32.0f;
+
+            blinkCounter = 0;
+        }
+        blinkCounter++;
+
         DrawTextureRec(t,sniperRec,position,WHITE);
         UpdateSniper(player);
     }
@@ -113,7 +127,7 @@ void Sniper::UpdateSniper(Player player){
                                     {sniperRec.x,sniperRec.y}, 7.5f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        health -= 1;
+                                        health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
                                     }
         }
