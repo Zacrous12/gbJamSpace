@@ -48,14 +48,19 @@ void Crusty::Update(Player player){
     
 }
 
-void Crusty::Draw(Color c, Player player){
+void Crusty::Draw(Color c, Player &player){
     if(health > 0){
         DrawRectangleV(position,{spriteWidth,spriteWidth},c);
         Update(player);
     }
 
     int bulletCount = sizeof(player.bullets)/sizeof(player.bullets[0]);
-
+    if(hitTime<hitTimer)hitTime+=10*GetFrameTime();
+    else if(hitTime>=hitTimer){
+        if (CheckCollisionRecs(player.sprite,hitBox))Damage(player);
+        hitTime=0;
+    }
+    
 
     // Collision Check
     for (int k = 0; k < bulletCount; k++)
@@ -79,7 +84,7 @@ void Crusty::Draw(Color c, Player player){
 }
 
 void Crusty::Damage(Player &player) {
-    if(!hasShell){
-    //deal damage to player
-    }
+    
+    //if(!player.groundPound)    player.currentHealth-=dmg;
+    
 }

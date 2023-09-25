@@ -6,6 +6,8 @@ class Crusty {
     public:
     float health = 2;
     float dmg=2;
+    float hitTime;
+    float hitTimer=5;
     Vector2 position;
     float spriteWidth=20;
     bool hasShell = true;
@@ -21,7 +23,7 @@ class Crusty {
 
     Crusty(Vector2 pos);
     void Update(Player player);
-    void Draw(Color c,Player player);
+    void Draw(Color c,Player &player);
     void Damage(Player &player);
 
     Sound crusty;

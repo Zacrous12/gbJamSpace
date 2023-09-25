@@ -6,7 +6,7 @@
 class Boss {
     public:
     Boss(Vector2);
-    void Draw(Player,Color);
+    void Draw(Player&,Color);
     void Update(Player);
     //attacks
     void Bullets(Player);
@@ -19,6 +19,7 @@ class Boss {
     float bulletSpeed=15;
     int flipX;
     bool shouldFire=false;
+    float bulletDmg=5;
     void Slam(Player &player);
     Rectangle slamRange;
     float slamDmg=30;

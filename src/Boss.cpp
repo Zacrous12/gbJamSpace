@@ -108,11 +108,12 @@ void Boss::Slam(Player &player){
     if(!IsSoundPlaying(bossHit)) PlaySound(bossHit);
 }
 
-void Boss::Draw(Player player,Color c){
+void Boss::Draw(Player &player,Color c){
     if(health>0){
         DrawTexturePro(boss, {spritePos.x,spritePos.y,spriteWidth,spriteWidth}, {position.x,position.y,spriteWidth,spriteWidth}, {0,0}, 0, WHITE);
         
         Update(player);
+      
         if (shouldFire && isAttacking){
             
             if (flipX==1){
@@ -141,13 +142,23 @@ void Boss::Draw(Player player,Color c){
                     
                 }
             }
-            
+            Vector2 bullets[3]={bulletPos,bullet2Pos,bullet3Pos};
             DrawCircleV(bulletPos,5,BLACK);
+            for(int i=0;i<=3;i++){
+                if(CheckCollisionCircleRec(bullets[i],5,player.sprite)){
+                player.currentHealth-=bulletDmg;
+                shouldFire=false;
+                isAttacking=false;
+
+                }
+            }
             DrawCircleV(bullet2Pos,5,BLACK);
             DrawCircleV(bullet3Pos,5,BLACK);
         }else{
             
             bulletPos=position;
+            bullet2Pos=position;
+            bullet3Pos=position;
         
         }
 
@@ -158,7 +169,7 @@ void Boss::Draw(Player player,Color c){
             if(travelDis<rollDistance && shouldRoll){
                 position.x+=currentSpeed*GetFrameTime();
                 travelDis+=rollSpeed*GetFrameTime();
-                if(rollTimer>8){
+                if(rollTimer>7){
                     spritePos.y = 420.0f;
                     spritePos.x += 140.0f;
                 }
@@ -174,7 +185,7 @@ void Boss::Draw(Player player,Color c){
         }
     } else {
         if(!IsSoundPlaying(bossDeath)) PlaySound(bossDeath), UnloadSound(bossDeath);
-        if(rollTimer > 8){
+        if(rollTimer > 7){
             rollTimer = 0;
             spritePos.y = 700.0f;
             spritePos.x += 140.0f;
