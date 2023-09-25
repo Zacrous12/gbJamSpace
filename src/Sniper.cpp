@@ -85,7 +85,7 @@ void Sniper::DrawSniper(Texture2D t,Player &player){
 
 //draw Bullet---------------------------------    
     if (shouldFire){
-        PlaySound(blink);
+        if(!IsSoundPlaying(blink)) PlaySound(blink);
         
         if (flipX==1){
             if (bulletPos.x < targetPos.x ){
@@ -133,13 +133,12 @@ void Sniper::UpdateSniper(Player player){
                                         this->health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
                                         player.bullets[k].damage = 0;
-                                        printf("sniper health: %f\n", health);
                                     }
         }
 
         if(health <= 0){
             //killSniper()
-            PlaySound(sniperDeath);
+            if(!IsSoundPlaying(sniperDeath)) PlaySound(sniperDeath);
         }
     
         if (shootTimer < shootDelay) shootTimer+=5*GetFrameTime();

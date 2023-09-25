@@ -45,6 +45,7 @@ class Boss {
     Sound bossDeath;
     Sound bossRoll;
     Sound bossHit;
+    int rollTimer=8;
 
     Texture2D boss;
 };

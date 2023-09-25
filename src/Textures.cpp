@@ -24,4 +24,12 @@ Textures::Textures(){
     sniper = LoadTexture("src/_resources/sprites/9axis-sniper_spritesheet.png"); 
     boss = LoadTexture("src/_resources/sprites/BOSS.png");
     death = LoadTexture("src/_resources/sprites/DED.png");
+    gameOver = LoadTexture("src/_resources/textures/GAMEOVER1.png");
+    title1 = LoadTexture("src/_resources/sprites/INTRO1.png");
+    title2 = LoadTexture("src/_resources/sprites/INTRO2.png");
+    title3 = LoadTexture("src/_resources/sprites/INTRO3.png");
+    title4 = LoadTexture("src/_resources/sprites/INTRO4.png");
+    title5 = LoadTexture("src/_resources/sprites/INTRO5.png");
+    title6 = LoadTexture("src/_resources/sprites/INTRO6.png");
+    title7 = LoadTexture("src/_resources/sprites/INTRO7.png");
 }

@@ -32,7 +32,7 @@ void Crusty::Update(Player player){
 
 
     if (isCharging) {
-        PlaySound(crusty);
+        if(!IsSoundPlaying(crusty)) PlaySound(crusty);
         chargeTimer += 10*GetFrameTime();
         if(chargeTimer>=chargeTime){
             isCharging = false;
@@ -73,7 +73,7 @@ void Crusty::Draw(Color c, Player player){
 
         if(health <= 0){
             //killCrusty()
-            PlaySound(crustyDeath);
+            if(!IsSoundPlaying(crustyDeath)) PlaySound(crustyDeath);
         }
     
 }

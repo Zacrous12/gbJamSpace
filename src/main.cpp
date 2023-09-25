@@ -19,7 +19,7 @@ const float virtualRatio = (float)screenWidth/(float)virtualScreenWidth;
 
 Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
-enum class GameScreen { TITLE, GAMEPLAY, BOSS, PAUSE };
+enum class GameScreen { TITLE, GAMEPLAY, GAMEOVER, PAUSE, WIN };
 
 class GameOverScreen
 {
@@ -56,49 +56,50 @@ int main()
     mainMenu.looping = true;
     Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
 
-    GameScreen currentScreen = GameScreen::TITLE;
-
-    std::vector<int> myVector;
+    GameScreen currentScreen = GameScreen::GAMEOVER;
 
     SetTargetFPS(60);
 
-    // Image icon = LoadImage("icons/Pictures/Untitled.png"); WINDOW ICON
-    // ImageFormat(&icon, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
-    // SetWindowIcon(icon);
-    // UnloadImage(icon);
+    Image icon = LoadImage("src/_resources/sprites/9-axis_angel2.png");
+    ImageFormat(&icon, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+    SetWindowIcon(icon);
+    UnloadImage(icon);
 
     Player player = Player(900.0f,0.0f);
-    Boss boss = Boss({950,15});
+    Boss boss = Boss({300,15});
     player.LoadSounds();
     
     std::vector<Sniper> snipers;
     std::vector<Crusty> crusties;
 
-
-
     // MAP VARIABLES
-    int mapWidth = 64;
+    int mapWidth = 256;
     int mapHeight = 10;
     float cellSize = 16;
     float mapX = 0.0f;
     float mapY = 0.0f;
     int tileMap[] = {
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        //  4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 4 - - - 
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,0,0,3,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3,0,0,0,0,4,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     };
 
-    // BLOCKS ** Height and width will always be 32 pixels **
     std::vector<EnvItem> envItems;
 
     Textures t = Textures();
+    Texture2D currentEnd;
+
+    std::vector<Texture2D> ending = {
+        t.title1, t.title2, t.title3, t.title4, t.title5, t.title6, t.title7
+    };
 
     for (float y = 0; y < mapHeight; ++y)
     {
@@ -233,7 +234,7 @@ int main()
 
             player.Update(deltaTime, envItemsPtr, envItemsLength);
 
-            //if(player.currentHealth <= 0) currentScreen = GameScreen::TITLE;
+            if(player.currentHealth <= 0) currentScreen = GameScreen::GAMEOVER;
 
             cameraX = player.playerX - 70.0f;
             cameraY = 32.0f;
@@ -250,6 +251,8 @@ int main()
             screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
             screenSpaceCamera.target.y *= virtualRatio;
 
+            //if(boss.health < 1.0f) currentScreen = GameScreen::WIN;
+
             BeginTextureMode(target);
                 ClearBackground(palette[0]);
 
@@ -262,14 +265,19 @@ int main()
                     {
                         DrawTextureRec(t.floor16, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, WHITE);
                     }
-                    for (int i = 0; i < sniperLength; i++) if(snipers[i].health > 0) snipers[i].DrawSniper(t.sniper, *p);
-
+                    for (int i = 0; i < sniperLength; i++)  
+                    {
+                        if(snipers[i].health > 0){
+                            snipers[i].DrawSniper(t.sniper, *p);
+                            snipers[i].UpdateSniper(player);
+                        }
+                    }
                     for (int i = 0; i < crustyLength; i++) if(crusties[i].health > 0) crusties[i].Draw(palette[2], *p);
                     
                     // SPRITE 
                     player.Draw();
                     DrawTextureRec((player.currentHealth > 0) ? t.idle : t.death, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
-                    if(boss.health > 0) boss.Draw(player,palette[1]);
+                    boss.Draw(player,palette[1]);
 
                     // UI
                     DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);
@@ -313,15 +321,60 @@ int main()
         }
         break;
 
-        case GameScreen::BOSS:
+        case GameScreen::GAMEOVER:
         {
+            cameraX = 60.0f;
+            cameraY = 60.0f;
 
+            // Set the camera's target to the values computed above
+            screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
+
+            // Round worldSpace coordinates, keep decimals into screenSpace coordinates
+            worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
+            screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
+            screenSpaceCamera.target.x *= virtualRatio;
+
+            worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
+            screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
+            screenSpaceCamera.target.y *= virtualRatio;
+
+            textOffsetX = (int)(sin(GetTime()) * 10.0f);
+            textOffsetY = (int)(cos(GetTime()) * 10.0f);
+
+            if(IsKeyPressed(KEY_ENTER)) 
+            {
+                currentScreen = GameScreen::TITLE;
+            }
+
+            StopMusicStream(gameplay);
+            PlayMusicStream(mainMenu);
+
+            BeginTextureMode(target);
+                ClearBackground(palette[0]);
+
+                UpdateMusicStream(mainMenu);
+
+                BeginMode2D(worldSpaceCamera);
+
+                    
+                    DrawTexture(t.gameOver, 0, 0, WHITE);
+                    
+                EndMode2D();
+            EndTextureMode();
+
+            BeginDrawing();
+                BeginMode2D(screenSpaceCamera);
+                    DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+                EndMode2D();
+            EndDrawing();
         }
         break;
 
         case GameScreen::PAUSE:
         {
             if(IsKeyPressed(KEY_ENTER)) currentScreen = GameScreen::GAMEPLAY;
+
+            PlaySound(menuBlip);
 
             cameraX = 60.0f;
             cameraY = 60.0f;
@@ -356,6 +409,54 @@ int main()
             EndDrawing();
         }
         break;
+
+        case GameScreen::WIN:
+        {
+            cameraX = 60.0f;
+            cameraY = 60.0f;
+
+            // Set the camera's target to the values computed above
+            screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
+
+            // Round worldSpace coordinates, keep decimals into screenSpace coordinates
+            worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
+            screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
+            screenSpaceCamera.target.x *= virtualRatio;
+
+            worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
+            screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
+            screenSpaceCamera.target.y *= virtualRatio;
+
+
+            backTimer++;
+
+
+            if(backTimer > 60) 
+            {
+                backTimer = 0;
+                currentEnd = ending[textTimer];
+                textTimer++;
+            }
+
+            StopMusicStream(gameplay);
+            PlayMusicStream(mainMenu);
+
+            BeginTextureMode(target);
+                ClearBackground(palette[0]);
+                UpdateMusicStream(mainMenu);
+                BeginMode2D(worldSpaceCamera);
+
+                    DrawTexture(currentEnd, 0, 0, WHITE);
+                    
+                EndMode2D();
+            EndTextureMode();
+
+            BeginDrawing();
+                BeginMode2D(screenSpaceCamera);
+                    DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+                EndMode2D();
+            EndDrawing();
+        }
 
         default:{}
         break;

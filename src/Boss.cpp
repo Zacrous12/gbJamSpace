@@ -26,7 +26,7 @@ void Boss::Update(Player player){
     hitBox.width=spriteWidth;
     
     
-    if(player.position.x>=600)bossFight=true;
+    if(player.position.x>=30)bossFight=true;
     
     if(bossFight){    
         if(decTime<decTimer && !isAttacking)decTime += 5*GetFrameTime();
@@ -58,9 +58,9 @@ void Boss::Update(Player player){
                                     {position.x,position.y}, 10.0f))
                                     {
                                         player.bullets[k].position = {0,0};
-                                        //if(!isRolling)health -= player.bullets[k].damage;
+                                        if(!isRolling)health -= player.bullets[k].damage;
                                         player.bullets[k].range = 0;
-                                        //PlaySound(bossHurt);
+                                        //if(!IsSoundPlaying(bossHurt)) PlaySound(bossHurt);
                                     }
         }
     
@@ -91,7 +91,7 @@ void Boss::Bullets(Player player){
 
 void Boss::Roll(Player player){
     isRolling=true;
-    //PlaySound(bossRoll);
+    //if(!IsSoundPlaying(bossRoll)) PlaySound(bossRoll);
     
     if(player.position.x+player.spriteWidth<position.x){
         currentSpeed=-rollSpeed;
@@ -105,7 +105,7 @@ void Boss::Roll(Player player){
 
 void Boss::Slam(Player &player){
     player.currentHealth -= slamDmg;
-    PlaySound(bossHit);
+    if(!IsSoundPlaying(bossHit)) PlaySound(bossHit);
 }
 
 void Boss::Draw(Player player,Color c){
@@ -153,12 +153,19 @@ void Boss::Draw(Player player,Color c){
 
         //rolling
         if(isRolling){
-            if(CheckCollisionRecs(player.sprite,hitBox)  && player.groundPound)shouldRoll=false;
+            if(CheckCollisionRecs(player.sprite,hitBox)  && player.groundPound)shouldRoll=false, spritePos.x = 0.0f;
             else shouldRoll=true;
             if(travelDis<rollDistance && shouldRoll){
                 position.x+=currentSpeed*GetFrameTime();
                 travelDis+=rollSpeed*GetFrameTime();
+                if(rollTimer>8){
+                    spritePos.y = 420.0f;
+                    spritePos.x += 140.0f;
+                }
+                rollTimer++;
+
             }else if(travelDis>=rollDistance || !shouldRoll){
+                spritePos.y = 0.0f;
                 currentSpeed=0;
                 isRolling=false;
                 isAttacking=false;
@@ -166,7 +173,13 @@ void Boss::Draw(Player player,Color c){
             }
         }
     } else {
-        PlaySound(bossDeath);
+        if(!IsSoundPlaying(bossDeath)) PlaySound(bossDeath), UnloadSound(bossDeath);
+        if(rollTimer > 8){
+            rollTimer = 0;
+            spritePos.y = 700.0f;
+            spritePos.x += 140.0f;
+        }
+        rollTimer++;
         //KillBoss();
     }
 }
