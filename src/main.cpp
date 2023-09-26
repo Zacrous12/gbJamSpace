@@ -8,42 +8,76 @@
 #include "Crusty.h"
 #include "Textures.h"
 #include "Boss.h"
+#include "GameState.h"
 
-const int screenWidth = 640;
-const int screenHeight = 576;
+const int screenWidth = 320 * 3;
+const int screenHeight = 288 * 3;
 
-const int virtualScreenWidth = 160;
-const int virtualScreenHeight = 144;
+const int virtualScreenWidth = 320;
+const int virtualScreenHeight = 288;
 
 const float virtualRatio = (float)screenWidth/(float)virtualScreenWidth;
 
 Color palette[] = { GetColor(0x622e4cff), GetColor(0x7550e8ff), GetColor(0x608fcfff), GetColor(0x8be5ffff)};
 
-enum class GameScreen { TITLE, GAMEPLAY, GAMEOVER, PAUSE, WIN };
+enum class GameScreen { TITLE, GAMEPLAY, LOADING, GAMEOVER, PAUSE, WIN };
 
-class GameOverScreen
+void UnloadStage(std::vector<Crusty>& crusties, std::vector<Sniper>& snipers, std::vector<EnvItem>& envItems)
 {
-    public:
-    void Draw() {
-        if(aWinnerIsYou)
-        {
-            DrawText("Congratulations!", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
-        } else 
-        {
-            DrawText("GAME OVER", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
-            DrawText("RESTART", virtualScreenWidth/2, virtualScreenHeight/2 + 20, 8, palette[3]);
-            DrawText("Quit to Main Menu", virtualScreenWidth/2, virtualScreenHeight/2 + 40, 8, palette[3]);
-            if(selectRestart) DrawRectangleLines(virtualScreenWidth/2 - 50, virtualScreenHeight/2 + 20, 100, 10, palette[3]);
-            else DrawRectangleLines(virtualScreenWidth/2 - 50, virtualScreenHeight/2 + 40, 100, 10, palette[3]);
-        }
-    //    if(IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) selectRestart = !selectRestart, PlaySound(menuBlip);
+    crusties.clear();
+    envItems.clear();
+    snipers.clear();
+}
 
+void UpdateCameraPlayer(float& cameraX, float& cameraY, const Player& player, Camera2D& screenSpaceCamera, Camera2D& worldSpaceCamera, float virtualRatio)
+{
+    // Camera Smoothing
+    cameraX += (player.playerX - 140.0f - cameraX) * 0.1f;
+    if(player.playerY < 200) cameraY += (player.playerY - 148.0f - cameraY) * 0.1f;
+    else cameraY += (52.0f - cameraY) * 0.1f;
+
+    // Set the camera's target to the values computed above
+    screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
+
+    // Round worldSpace coordinates, keep decimals into screenSpace coordinates
+    worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
+    screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
+    screenSpaceCamera.target.x *= virtualRatio;
+
+    worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
+    screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
+    screenSpaceCamera.target.y *= virtualRatio;
+}
+
+void DrawHud(Player& player, Textures& t)
+{
+    // HEALTH 
+    DrawRectangle(10, 10, 192.0f, 20, palette[1]);
+    DrawRectangle(15, 13, (float)player.currentHealth / (float)player.maxHealth * 182.0f, 14, palette[3]);                    
+
+    switch (player.currentWeapon)
+    {
+    case Weapon::PISTOL:
+        DrawTexturePro(t.defaultWpn, (Rectangle){0,0,16,16}, (Rectangle){screenWidth - 64,0,64,64}, (Vector2){0,0}, 0, WHITE);
+        break;
+
+    case Weapon::FLAMETHROWER:
+        DrawTexturePro(t.flameWpn, (Rectangle){0,0,16,16}, (Rectangle){screenWidth - 64,0,64,64}, (Vector2){0,0}, 0, WHITE);
+        break;
+
+    case Weapon::LASER:
+        DrawTexturePro(t.spaceWpn, (Rectangle){0,0,16,16}, (Rectangle){screenWidth - 64,0,64,64}, (Vector2){0,0}, 0, WHITE);
+        break;
+
+    case Weapon::SPACE:
+        DrawTexturePro(t.spaceWpn, (Rectangle){0,0,16,16}, (Rectangle){screenWidth - 64,0,64,64}, (Vector2){0,0}, 0, WHITE);
+        break;
+
+    default:
+        DrawTexturePro(t.nullWpn, (Rectangle){0,0,16,16}, (Rectangle){screenWidth - 64,0,64,64}, (Vector2){0,0}, 0, WHITE);
+        break;
     }
-
-    bool aWinnerIsYou = false;
-    bool selectRestart = true;
-};
-GameOverScreen gameOver;
+}
 
 int main()
 {
@@ -55,8 +89,9 @@ int main()
     PlayMusicStream(mainMenu);
     mainMenu.looping = true;
     Sound menuBlip = LoadSound("src/_resources/sounds/menuBlip.wav");
+    GameState gameState = GameState();
 
-    GameScreen currentScreen = GameScreen::GAMEOVER;
+    GameScreen currentScreen = GameScreen::GAMEPLAY;
 
     SetTargetFPS(60);
 
@@ -65,17 +100,18 @@ int main()
     SetWindowIcon(icon);
     UnloadImage(icon);
 
+
+    // LOADING STUFF
     Player player = Player(900.0f,0.0f);
     Boss boss = Boss({300,15});
     player.LoadSounds();
-    
     std::vector<Sniper> snipers;
     std::vector<Crusty> crusties;
 
     // MAP VARIABLES
     int mapWidth = 256;
     int mapHeight = 10;
-    float cellSize = 16;
+    float cellSize = 32;
     float mapX = 0.0f;
     float mapY = 0.0f;
     int tileMap[] = {
@@ -160,6 +196,9 @@ int main()
     int textTimer = 0;
     int backTimer = 0;
 
+    // TODO DELETE THIS
+    CloseAudioDevice();
+
     while (!WindowShouldClose())
     {
         switch (currentScreen)
@@ -203,7 +242,6 @@ int main()
                     if(backTimer > 140) backTimer = 0;
                     else backTimer++;
                     
-                    // UI
                     DrawText("Florida Man", virtualScreenWidth / 2 + 1 + textOffsetX, virtualScreenHeight / 2 + 30 + textOffsetY, 18, palette[1]);
                     DrawText("Florida Man", virtualScreenWidth / 2 + 2 + textOffsetX, virtualScreenHeight / 2 + 31 + textOffsetY, 18, palette[2]);
                     DrawText("Florida Man", virtualScreenWidth / 2 + 3 + textOffsetX, virtualScreenHeight / 2 + 32 + textOffsetY, 18, palette[3]);
@@ -236,20 +274,7 @@ int main()
 
             if(player.currentHealth <= 0) currentScreen = GameScreen::GAMEOVER;
 
-            cameraX = player.playerX - 70.0f;
-            cameraY = 32.0f;
-
-            // Set the camera's target to the values computed above
-            screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
-
-            // Round worldSpace coordinates, keep decimals into screenSpace coordinates
-            worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
-            screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
-            screenSpaceCamera.target.x *= virtualRatio;
-
-            worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
-            screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
-            screenSpaceCamera.target.y *= virtualRatio;
+            UpdateCameraPlayer(cameraX, cameraY, player, screenSpaceCamera, worldSpaceCamera, virtualRatio);
 
             //if(boss.health < 1.0f) currentScreen = GameScreen::WIN;
 
@@ -257,13 +282,14 @@ int main()
                 ClearBackground(palette[0]);
 
                 BeginMode2D(worldSpaceCamera);
-                    for (int x = 0; x < mapWidth; ++x){
-                        for (int i = 0; i < mapHeight; ++i) DrawTexture(t.backTile1, x*16, i*16, WHITE);
-                    }
+                    // Took out to begin implementing 
+                    // for (int x = 0; x < mapWidth; ++x){
+                    //     for (int i = 0; i < mapHeight; ++i) DrawTexture(t.backTile1, x*cellSize, i*cellSize, WHITE);
+                    // }
 
                     for (int i = 0; i < envItemsLength; i++) 
                     {
-                        DrawTextureRec(t.floor16, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, WHITE);
+                        DrawTextureRec(t.floor32, envItems[i].rect, {envItems[i].rect.x, envItems[i].rect.y}, WHITE);
                     }
                     for (int i = 0; i < sniperLength; i++)  
                     {
@@ -276,36 +302,8 @@ int main()
                     
                     // SPRITE 
                     player.Draw();
-                    DrawTextureRec((player.currentHealth > 0) ? t.idle : t.death, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
                     boss.Draw(player,palette[1]);
-
-                    // UI
-                    DrawRectangle(player.playerX - 62, 35, 24.0f, 4, palette[1]);
-                    DrawRectangle(player.playerX - 60, 36, (float)player.currentHealth / (float)player.maxHealth * 20.0f, 2, palette[3]);                    
-                    switch (player.currentWeapon)
-                    {
-                    case Weapon::PISTOL:
-                        DrawTexture(t.defaultWpn, player.playerX + 72, 34, WHITE);
-                        break;
-                    
-                    case Weapon::FLAMETHROWER:
-                        DrawTexture(t.flameWpn, player.playerX + 72, 34, WHITE);
-                        break;
-
-                    case Weapon::LASER:
-                        DrawTexture(t.laserWpn, player.playerX + 72, 34, WHITE);
-                        break;
-
-                    case Weapon::SPACE:
-                        DrawTexture(t.spaceWpn, player.playerX + 72, 34, WHITE);
-                        break;
-
-                    default:
-                        DrawTexture(t.nullWpn, player.playerX + 72, 34, WHITE);
-                        break;
-                    }
-                    
-
+                    DrawTextureRec((player.currentHealth > 0) ? t.idle : t.death, {player.spritePos.x + 8.0f, player.spritePos.y + 8.0f, player.flipWidth, player.sprite.height}, {player.playerX, player.playerY + 5.0f}, WHITE);
                 EndMode2D();
             EndTextureMode();
 
@@ -313,30 +311,18 @@ int main()
                 ClearBackground(palette[0]);
 
                 BeginMode2D(screenSpaceCamera);
-                    DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);
+                    DrawTexturePro(target.texture, sourceRec, destRec, origin, 0.0f, WHITE);                    
                 EndMode2D();
                 
-                
+                DrawHud(player, t);
+
             EndDrawing();
         }
         break;
 
         case GameScreen::GAMEOVER:
         {
-            cameraX = 60.0f;
-            cameraY = 60.0f;
-
-            // Set the camera's target to the values computed above
-            screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
-
-            // Round worldSpace coordinates, keep decimals into screenSpace coordinates
-            worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
-            screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
-            screenSpaceCamera.target.x *= virtualRatio;
-
-            worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
-            screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
-            screenSpaceCamera.target.y *= virtualRatio;
+            UpdateCameraPlayer(cameraX, cameraY, player, screenSpaceCamera, worldSpaceCamera, virtualRatio);
 
             textOffsetX = (int)(sin(GetTime()) * 10.0f);
             textOffsetY = (int)(cos(GetTime()) * 10.0f);
@@ -345,6 +331,8 @@ int main()
             {
                 currentScreen = GameScreen::TITLE;
             }
+
+            if(IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_DOWN)) gameState.selectRestart = !gameState.selectRestart, PlaySound(menuBlip);
 
             StopMusicStream(gameplay);
             PlayMusicStream(mainMenu);
@@ -356,6 +344,17 @@ int main()
 
                 BeginMode2D(worldSpaceCamera);
 
+                    if(gameState.isGameWon)
+                    {
+                        DrawText("Congratulations!", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
+                    } else 
+                    {
+                        DrawText("GAME OVER", virtualScreenWidth/2, virtualScreenHeight/2, 20, palette[3]);
+                        DrawText("RESTART", virtualScreenWidth/2, virtualScreenHeight/2 + 20, 8, palette[3]);
+                        DrawText("Quit to Main Menu", virtualScreenWidth/2, virtualScreenHeight/2 + 40, 8, palette[3]);
+                        if(gameState.selectRestart) DrawRectangleLines(virtualScreenWidth/2 - 50, virtualScreenHeight/2 + 20, 100, 10, palette[3]);
+                        else DrawRectangleLines(virtualScreenWidth/2 - 50, virtualScreenHeight/2 + 40, 100, 10, palette[3]);
+                    }
                     
                     DrawTexture(t.gameOver, 0, 0, WHITE);
                     
@@ -376,20 +375,7 @@ int main()
 
             PlaySound(menuBlip);
 
-            cameraX = 60.0f;
-            cameraY = 60.0f;
-
-            // Set the camera's target to the values computed above
-            screenSpaceCamera.target = (Vector2){ cameraX, cameraY };
-
-            // Round worldSpace coordinates, keep decimals into screenSpace coordinates
-            worldSpaceCamera.target.x = (int)screenSpaceCamera.target.x;
-            screenSpaceCamera.target.x -= worldSpaceCamera.target.x;
-            screenSpaceCamera.target.x *= virtualRatio;
-
-            worldSpaceCamera.target.y = (int)screenSpaceCamera.target.y;
-            screenSpaceCamera.target.y -= worldSpaceCamera.target.y;
-            screenSpaceCamera.target.y *= virtualRatio;
+            UpdateCameraPlayer(cameraX, cameraY, player, screenSpaceCamera, worldSpaceCamera, virtualRatio);
 
             BeginTextureMode(target);
 
@@ -469,3 +455,6 @@ int main()
     CloseWindow();
     return 0;
 }
+
+
+

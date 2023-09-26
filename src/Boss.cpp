@@ -6,12 +6,20 @@
 Boss::Boss(Vector2 pos){
     position=pos;
     spritePos={0.0f, 0.0f};
-    boss = LoadTexture("src/_resources/sprites/BOSS.png"); 
     
+    boss = LoadTexture("src/_resources/sprites/BOSS.png"); 
     bossHurt = LoadSound("src/_resources/sounds/bossHurt.wav");
     bossDeath = LoadSound("src/_resources/sounds/bossDeath.wav");
     bossHit = LoadSound("src/_resources/sounds/bossHit.wav");
     bossRoll = LoadSound("src/_resources/sounds/bossRoll.wav");
+}
+
+Boss::~Boss(){
+    UnloadTexture(boss);
+    UnloadSound(bossHurt);
+    UnloadSound(bossDeath);
+    UnloadSound(bossHit);
+    UnloadSound(bossRoll);
 }
 
 void Boss::Update(Player player){

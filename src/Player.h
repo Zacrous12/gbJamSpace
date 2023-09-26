@@ -25,9 +25,13 @@ class Player
 {
 public:
     Player(float x, float y);
+    void InitPlayer();
     void Draw();
     void Update(float deltaTime, std::vector<EnvItem> *envItems, int envItemsLength);
     void Shoot(bool isRight, float speed, Vector2 pos, Color col, float rad, float range, int damage);
+    void Jump();
+    void WallJump();
+    void GroundPound();
     void LoadSounds();
 
     // POSITION

@@ -99,7 +99,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
 
         if(walkCounter > 8) 
         {
-            if(!hitObstacle && spritePos.x >= 140.0f) spritePos.x = 0.0f;
+            if(!hitObstacle && spritePos.x >= 280.0f) spritePos.x = 0.0f;
             else if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
             spritePos.x += 48.0f;
             walkCounter = 0;
@@ -139,7 +139,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
 
         if(walkCounter > 8) 
         {
-            if(!hitObstacle && spritePos.x >= 140.0f) spritePos.x = 0.0f;
+            if(!hitObstacle && spritePos.x >= 280.0f) spritePos.x = 0.0f;
             else if(spritePos.x >= 230.0f) spritePos.x = -48.0f;
             spritePos.x += 48.0f;
             walkCounter = 0;
@@ -187,7 +187,7 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
             jumpTimer = 3;
             wallJump = true;
         } 
-    } else if(!canJump && jumpTimer < 2 && playerY < 140.0f) 
+    } else if(!canJump && jumpTimer < 2 && playerY < 280.0f) 
     {
         playerY += 3.0f * gravity;
         gravity += 0.1f;
@@ -238,13 +238,13 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         if(jumpTimer == 0) groundPound = false;
     }
 
-    if (playerY < 140.0f) // Player is in the air
+    if (playerY < 280.0f) // Player is in the air
     {
         canJump = false; 
         playerY += gravity; 
-        if (playerY >= 140.0f) 
+        if (playerY >= 280.0f) 
         {
-            playerY = 140.0f; // Snap player to ground
+            playerY = 280.0f; // Snap player to ground
             gravity = 1.0f; 
             canJump = true; 
             spritePos.y = 0.0f;
@@ -253,9 +253,9 @@ void Player::Update(float deltaTime, std::vector<EnvItem> *envItems, int envItem
         }
     }
 
-    if (playerY >= 140.0f)
+    if (playerY >= 280.0f)
     {
-        playerY = 140.0f;
+        playerY = 280.0f;
         canJump = true;
         wallJump = false;
         canMoveLeft = true;
@@ -364,4 +364,12 @@ void Player::LoadSounds()
     this->laser = LoadSound("src/_resources/sounds/laser.wav");
     this->flame = LoadSound("src/_resources/sounds/flame.wav");
     this->space = LoadSound("src/_resources/sounds/space.wav");
+}
+
+void Player::InitPlayer()
+{
+    this->LoadSounds();
+    currentHealth = maxHealth;
+    currentSpecial = maxSpecial;
+    currentWeapon = PISTOL;
 }

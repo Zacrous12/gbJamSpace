@@ -6,6 +6,7 @@
 class Boss {
     public:
     Boss(Vector2);
+    ~Boss();
     void Draw(Player&,Color);
     void Update(Player);
     //attacks
