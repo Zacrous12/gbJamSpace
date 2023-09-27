@@ -32,4 +32,8 @@ Textures::Textures(){
     title5 = LoadTexture("src/_resources/sprites/INTRO5.png");
     title6 = LoadTexture("src/_resources/sprites/INTRO6.png");
     title7 = LoadTexture("src/_resources/sprites/INTRO7.png");
+    bg1 = LoadTexture("src/_resources/backgrounds/background_1-1.png");
+    bg2 = LoadTexture("src/_resources/backgrounds/background_2-1.png");
+    bg1e = LoadTexture("src/_resources/backgrounds/background_alternate.png");
+    bg2e = LoadTexture("src/_resources/backgrounds/background_extra.png");
 }

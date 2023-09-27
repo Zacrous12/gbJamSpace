@@ -77,11 +77,38 @@ void DrawHud(Player& player, Textures& t)
         DrawTexturePro(t.nullWpn, (Rectangle){0,0,16,16}, (Rectangle){screenWidth - 64,0,64,64}, (Vector2){0,0}, 0, WHITE);
         break;
     }
+} 
+
+void Parallax(Player& player, Textures& t, float& scrollingBack, float& scrollingFore)
+{
+    if(IsKeyDown(KEY_D) && player.canMoveRight) 
+    {
+        scrollingBack += -0.1f;
+        scrollingFore += -0.2f;
+    }
+    else if(IsKeyDown(KEY_A) && player.canMoveLeft) 
+    {
+        scrollingBack += 0.1f;
+        scrollingFore += 0.2f;
+    }
+
+    if(scrollingBack <= player.playerX - t.bg1.width) scrollingBack = player.playerX;
+    if(scrollingFore <= player.playerX - t.bg2.width) scrollingFore = player.playerX;
+}
+
+void ParallaxDraw(Textures& t, float scrollingBack, float scrollingFore)
+{
+    DrawTextureEx(t.bg1, (Vector2){ scrollingBack, 100 }, 0.0f, 1.0f, WHITE);
+    DrawTextureEx(t.bg1, (Vector2){ t.bg1.width + scrollingBack, 100 }, 0.0f, 1.0f, WHITE);
+    DrawTextureEx(t.bg1, (Vector2){ t.bg1.width * -1 + scrollingBack, 100 }, 0.0f, 1.0f, WHITE);
+    
+    DrawTextureEx(t.bg2, (Vector2){ scrollingFore, 180 }, 0.0f, 1.0f, WHITE);
+    DrawTextureEx(t.bg2, (Vector2){ t.bg2.width + scrollingFore, 180 }, 0.0f, 1.0f, WHITE);
+    DrawTextureEx(t.bg2, (Vector2){ t.bg2.width * -1 + scrollingFore, 180 }, 0.0f, 1.0f, WHITE);
 }
 
 int main()
 {
-
     InitWindow(screenWidth, screenHeight, "Florida Man");
     InitAudioDevice();
     Music mainMenu = LoadMusicStream("src/_resources/sounds/mainMenu.wav");
@@ -99,7 +126,6 @@ int main()
     ImageFormat(&icon, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
     SetWindowIcon(icon);
     UnloadImage(icon);
-
 
     // LOADING STUFF
     Player player = Player(900.0f,0.0f);
@@ -127,6 +153,8 @@ int main()
         1,2,0,0,0,0,0,1,1,1,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     };
+    float scrollingBack = 0.0f;
+    float scrollingFore = 0.0f;
 
     std::vector<EnvItem> envItems;
 
@@ -264,19 +292,16 @@ int main()
         
         case GameScreen::GAMEPLAY:
         {
-            if(IsKeyPressed(KEY_ENTER)) currentScreen = GameScreen::PAUSE;
-                
             float deltaTime = GetFrameTime();
-
             UpdateMusicStream(gameplay);
+                
+            if(IsKeyPressed(KEY_ENTER)) currentScreen = GameScreen::PAUSE;
+            if(player.currentHealth <= 0) currentScreen = GameScreen::GAMEOVER;
+            //if(boss.health < 1.0f) currentScreen = GameScreen::WIN;
 
             player.Update(deltaTime, envItemsPtr, envItemsLength);
-
-            if(player.currentHealth <= 0) currentScreen = GameScreen::GAMEOVER;
-
             UpdateCameraPlayer(cameraX, cameraY, player, screenSpaceCamera, worldSpaceCamera, virtualRatio);
-
-            //if(boss.health < 1.0f) currentScreen = GameScreen::WIN;
+            Parallax(player, t, scrollingBack, scrollingFore);
 
             BeginTextureMode(target);
                 ClearBackground(palette[0]);
@@ -286,6 +311,8 @@ int main()
                     // for (int x = 0; x < mapWidth; ++x){
                     //     for (int i = 0; i < mapHeight; ++i) DrawTexture(t.backTile1, x*cellSize, i*cellSize, WHITE);
                     // }
+
+                    ParallaxDraw(t, scrollingBack, scrollingFore);
 
                     for (int i = 0; i < envItemsLength; i++) 
                     {
